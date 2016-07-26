@@ -1,0 +1,102 @@
+﻿@model WebSite.Models.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+    ViewBag.Title = "Register";
+}
+
+
+<div class="col-md-6 col-md-offset-3 auth-layout">
+
+    <fieldset class="form-horizontal">
+        <legend class="">@(ViewBag.RegistrationInProgress ? "Registration" : "Authorization")</legend>
+
+        <div id="LoginForm" class='col-md-12 @(ViewBag.RegistrationInProgress?"hidden_custom":"") '>
+            <div class="form-group">
+                @Html.TextBox("Login", "", new { @class = "form-control", @placeholder = "Email" })
+            </div>
+
+            <div class="form-group">
+                @Html.Password("LoginPass", "", new { @class = "form-control", @placeholder = "Password" })
+            </div>
+
+            <div class="text-center">
+                <div>
+                    <div id="LoginError"></div>
+                    <a href="#" id="LoginButton" class="btn btn-default">Login</a>
+                    <br /><br />
+                   <a href="#" id="ShowRemindButton" class="text-success">Remind me password</a>
+                    <p>
+                       @* @Html.ActionLink("Forgot your password?", "ForgotPassword")*@
+                    </p>
+                    <a href="#" id="ShowRegistrationButton" class="text-success text-uppercase">Register now</a>                                
+                </div>
+            </div>
+        </div>
+        
+        <div id="RegisterForm" class="col-md-12 @(ViewBag.RegistrationInProgress ? "" : "hidden_custom")">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new {role = "form", id = "RegistrationForm"}))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new {@class = "text-danger"})
+                <div class="form-group">
+                    @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control", @PlaceHolder = "FirstName"})
+                    @Html.ValidationMessageFor(m => m.FirstName)
+                </div>
+                <div class="form-group">
+
+                    @Html.TextBoxFor(m => m.LastName, new {@class = "form-control", @PlaceHolder = "LastName"})
+                    @Html.ValidationMessageFor(m => m.LastName)
+
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(m => m.Email, new {@class = "form-control", @PlaceHolder = "Email"})
+                    @Html.ValidationMessageFor(m => m.Email)
+                </div>
+                <div class="form-group">
+                    @Html.TextBoxFor(m => m.Department, new {@class = "form-control", @PlaceHolder = "Department name"})
+                    @Html.ValidationMessageFor(m => m.Department)
+                </div>
+                <div class="form-group">
+                    @Html.PasswordFor(m => m.Password, new {@class = "form-control", @PlaceHolder = "Password"})
+                    @Html.ValidationMessageFor(m => m.Password)
+                </div>
+                <div class="form-group">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control", @PlaceHolder = "Confirm Password"})
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                </div>
+                @*<div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" class="btn btn-default" value="Register"/>
+                        </div>
+                    </div>*@
+
+
+                <div class="text-center">
+                    <input type="submit" id="RegisterButton" class="btn btn-success" value="Register"/>
+                    @*  <a href="#" id="RegisterButton" class="btn btn-success">Register</a>*@
+                    <p>or</p>
+                    <a href="#" id="ShowLoginButton" class="text-info">Already registered</a>
+                </div>
+            }
+        </div>
+
+        <div id="ForgotPassForm" class="hidden_custom">
+            <div class="form-group">
+                <input name="ForgotEmail" id="ForgotEmail" class="form-control" placeholder="Enter your email"/>
+            </div>
+            <div id="RemindError"> </div>
+            <div class="text-center">
+                <button id="SendForgottenEmail" class="btn btn-default">
+                    Email Link
+                </button>
+                <p></p>
+                <a href="#" id="CancleRemind"  class="text-success">Cancel</a>
+            </div>
+        </div>
+
+    </fieldset>
+</div>
+
+@*@section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

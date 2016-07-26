@@ -1,0 +1,16 @@
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\DTO.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\DTO.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\System.Windows.Interactivity.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\de\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\en\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\es\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\fr\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\it\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\ja\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\ko\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\ru\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\zh-Hans\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\bin\Release\zh-Hant\System.Windows.Interactivity.resources.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\obj\Release\DTO.dll
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\obj\Release\DTO.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\DTO\obj\Release\DTO.csprojResolveAssemblyReference.cache

@@ -1,0 +1,14 @@
+D:\ScrumTracker\BusinessLayer.Contracts\bin\Debug\BusinessLayer.Contracts.dll
+D:\ScrumTracker\BusinessLayer.Contracts\bin\Debug\BusinessLayer.Contracts.pdb
+D:\ScrumTracker\BusinessLayer.Contracts\bin\Debug\DTO.dll
+D:\ScrumTracker\BusinessLayer.Contracts\bin\Debug\DTO.pdb
+D:\ScrumTracker\BusinessLayer.Contracts\obj\Debug\BusinessLayer.Contracts.csprojResolveAssemblyReference.cache
+D:\ScrumTracker\BusinessLayer.Contracts\obj\Debug\BusinessLayer.Contracts.dll
+D:\ScrumTracker\BusinessLayer.Contracts\obj\Debug\BusinessLayer.Contracts.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Debug\BusinessLayer.Contracts.dll
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Debug\BusinessLayer.Contracts.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Debug\DTO.dll
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Debug\DTO.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\obj\Debug\BusinessLayer.Contracts.csprojResolveAssemblyReference.cache
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\obj\Debug\BusinessLayer.Contracts.dll
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\obj\Debug\BusinessLayer.Contracts.pdb

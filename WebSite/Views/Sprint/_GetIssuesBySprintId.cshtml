@@ -1,0 +1,81 @@
+﻿@model IEnumerable<WebSite.Models.Issue.IssueInfoModel>
+@{
+    Layout = null;
+}
+
+<div class="clearfix"></div>
+
+@if (Model != null)
+{
+    <div class="board-container row">
+
+        <div class="list-story">
+            @foreach (var issue in Model)
+            {
+                <a href="#" class="ui-story-name">
+                    @if (issue.State.Name == "Fixed" || issue.State.Name == "Verified")
+                    {
+                        <del><b><span style="color: #375a7f;">@issue.Key-@issue.Number</span></b></del>
+                    }
+                    else
+                    {
+                        <b><span style="color: #375a7f;">@issue.Key-@issue.Number</span></b>
+                    }
+                    &nbsp;@issue.Name&nbsp;
+                    @if (issue.IssueType.Name == "Task" || issue.IssueType.Name == "Bug")
+                    {
+                        <span class="badge issues-badge">@issue.IssueType.Name.ToLower()</span>
+                    }
+                    else
+                    {
+                        <span class="badge issues-badge">@issue.CountIssues @Resources.Resource.Issues_small</span>
+                    }
+                </a>
+
+                <div class="agile-board-in-story" data-id="@issue.Id" data-sprintId="@issue.Sprint.Id"></div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="show-messege" align="center">
+        <h3 style="color: gray;"> @Resources.Resource.NoStoriesInThisSprint</h3>
+    </div>
+}
+
+<script type="text/javascript">
+    setTimeout(function() { $('.show-messege').fadeOut('slow') }, 3000);
+
+    $(function(e) {
+        //e.preventDefault();
+        $(".list-story").accordion({
+            heightStyle: "content",
+            collapsible: true,
+            active: true,
+            beforeActivate: function(event, ui) {
+
+                //var element = $(this).closest(".sprintrow").find(".agile-board-in-story");
+                //if ($(element).hasClass("ui-accordion-content-active")) {
+                //    //$(document).removeClass("ui-accordion-content-active");
+                //    $(element).empty();
+                //    console.log("if");
+                //} else {
+                   
+                    //$(element).addClass("ui-accordion-content-active");
+                    //var elementNew = ui.newPanel.context.nextElementSibling;
+                //console.log(ui);
+                    //console.log(ui.oldPanel);
+                    //console.log(ui.newPanel);
+                    var element = ui.newPanel;
+                    ui.oldPanel.empty();
+                    var issueId = $(element).attr("data-id");
+                    var sprintId = $(element).attr("data-sprintId");
+                    console.log(ui.newPanel);
+                    $(element).load('@Url.Action("ShowAgileBoard", "Sprint")' + "/?sprintId=" + sprintId + "&issueId=" + issueId);                    
+                //}
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,59 @@
+﻿@model WebSite.Models.Team.TeamModel
+@{
+    ViewBag.Title = "_ListUsersTeamPosPartial";
+}
+
+<ul id="userTeamPosList">
+    @foreach (var userTeamPos in Model.UserTeamPositions)
+    {
+    <li class="userTeamPosItem">
+        <input type="hidden" class="teamId" value="@userTeamPos.Team.Id" />
+        <input type="hidden" class="userId" value="@userTeamPos.Team.Id" />
+        <div class="meta">
+            <div class="row ">
+                <div class="col-md-4 p0">
+                    <img src="@Url.Content("~/Content")/images/avatars/@userTeamPos.User.Avatar" class="userAvatar" alt="" />
+
+                </div>
+                <div class="col-md-8 text-left userInfo">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>@userTeamPos.User.FirstName</p>
+                        </div>
+                        @if (ViewBag.UserPermission == true && (ViewBag.TeamPmId != userTeamPos.UserId || ViewBag.IsUserAdmin == true))
+                        {
+                        <div class="edit-userTeamPos col-md-3">
+                            <a href="@Url.Action("DeleteUserTeamPosInfo", "Team", new {UserId = userTeamPos.UserId, TeamId = userTeamPos.TeamId})" class="userTeamPosDelete"><i class="fa  fa-times"></i></a>
+                        </div>
+                        }
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p>@userTeamPos.User.LastName</p>
+                        </div>
+                        <div class="col-md-6"> @Html.Partial("~/Views/Team/_EditUserTeamPosPartial.cshtml", userTeamPos)</div>
+                    </div>
+                    <p class="userEmail">@userTeamPos.User.Email</p>
+                </div>
+
+            </div>
+        </div>
+    </li>
+    }
+</ul>
+@Html.Hidden("EditUserTeamPosition", Url.Action("EditUserTeamPos"))
+@if (ViewBag.UserPermission == true)
+{
+    <input type="hidden" value="@ViewBag.UserPermission.ToString().ToLower()" id="viewbag-user-permission"/>
+}
+@if (ViewBag.IsUserAdmin == true)
+{
+    <input type="hidden" value="@ViewBag.IsUserAdmin.ToString().ToLower()" id="viewbag-is-user-admin"/>
+}
+<input type="hidden" value="@ViewBag.TeamPmId" id="viewbag-team-pm-id" />
+
+
+
+
+

@@ -1,0 +1,279 @@
+﻿@model IEnumerable<WebSite.Models.Project.ProjectModel>
+
+@{
+    ViewBag.Title = @Resources.Resource.Projects;
+}
+
+<input type="hidden" class="viewbag-message" value="@ViewBag.Message" />
+
+<div id="myModalBox" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dissmiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">@Resources.Resource.Information</h4>
+            </div>
+            <div class="modal-body">
+                @ViewBag.Message
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="overflow project-top-menu">
+    @*form-group*@
+
+    <div class="col-md-4">
+        @using (Html.BeginForm("FilterProjectsByName", "Project", FormMethod.Get))
+        {
+            <div class="input-group">
+                <input name="id" type="text" class="searchProject form-control" placeholder="@Resources.Resource.Search" data-autocomplete-source='@Url.Action("AutocompleteProjectName", "Project")'>
+                <span class="input-group-btn">
+                    <input class="btn btn-default" type="submit" value="@Resources.Resource.Search" />
+                </span>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4 col-sm-offset-4 text-right">
+        <a href="@Url.Action("Index", "Project")" class="btn btn-success">
+            @Resources.Resource.ShowAll
+        </a>
+
+        @if (ViewBag.IsAdmin || ViewBag.ListTeamsPM != null)
+        {
+            <a href="#" type="button" data-toggle="modal" data-target="#modalCreate" class="showProjectModalCreate btn btn-success ">
+                @Resources.Resource.CreateProject
+            </a>
+        }
+        <div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="modalCreateLabel" aria-hidden="true"></div>
+    </div>
+
+</div>
+
+@if (Model == null)
+{
+    <div align="center">
+        <h3 style="color: gray;"> @Resources.Resource.ProjectsNoFound</h3>
+    </div>
+}
+else
+{
+    <div style="overflow: auto; height: 480px">
+        <table class="table table-striped table-hover" style="border: 1px solid #474543;">
+            <thead>
+                <tr>
+                    <th>@Resources.Resource.State</th>
+                    <th>@Resources.Resource.Key</th>
+                    <th>@Resources.Resource.Name</th>
+                    <th class="text-center">@Resources.Resource.CountSprints </th>
+                    <th class="text-center">@Resources.Resource.CountIssues </th>
+                    <th>@Resources.Resource.Created </th>
+                    <th>@Resources.Resource.Team </th>
+                    <th class="text-center">@Resources.Resource.Members </th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                var access = false;
+                if (!ViewBag.IsAdmin)
+                {
+                    var listProjectAccsess = (ViewBag.AccessProject as List<Guid>);
+                    if (listProjectAccsess != null)
+                    {
+                        access = (listProjectAccsess.Exists(x => x == item.Id));
+                    }
+                }
+
+                <tbody>
+                    <tr class="active">
+                        <td> @Html.DisplayFor(modelItem => item.NameStateProject) </td>
+                        <td> @Html.DisplayFor(modelItem => item.Code) </td>
+                        <td>
+                            @if (ViewBag.IsAdmin || access)
+                            {
+                                <a href="#" data-id="@item.Id" type="button" data-toggle="modal" data-target="#modalDetails" class="showProjectModal">@item.Name</a>
+                                <div class="modal fade" id="modalDetails" tabindex="-1" role="dialog" aria-labelledby="modalDetailsLabel" aria-hidden="true"></div>
+                            }
+                            else
+                            {
+                                <div>@item.Name</div>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (@item.CountSprints > 0)
+                            {
+
+                                <a href="@Url.Action("Index", "Sprint", new {id = item.Id})">@item.CountSprints</a>
+                            }
+                            else
+                            {
+                                if (ViewBag.IsAdmin || access)
+                                {
+                                    <a href="@Url.Action("Index", "Sprint", new {id = item.Id})" class="btn btn-success btn-xs">@Resources.Resource.Add</a>
+                                }
+                                else
+                                {
+                                    <div>-</div>
+                                }
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (@item.CountIssues > 0)
+                            {
+                                //if (ViewBag.IsAdmin || access)
+                                //{
+                                <a href="@Url.Action("Index", "Issue", new {id = item.Id})">@item.CountIssues</a>
+                                    @*}
+                                        else
+                                        {
+                                            <div>@item.CountIssues</div>
+                                        }*@
+                            }
+                            else
+                            {
+                                //if (ViewBag.IsAdmin || access)
+                                //{
+                                <a href="@Url.Action("Index", "Issue", new {id = item.Id})" class="btn btn-success btn-xs">@Resources.Resource.Add</a>
+                                    @*}
+                                        else
+                                        {
+                                            <div>-</div>
+                                        }*@
+                            }
+                        </td>
+                        <td> @item.DateCreate.ToShortDateString() </td>
+                        <td>
+                            @if (@item.TeamId != null)
+                            {
+                                <a href="@Url.Action("ShowTeam", "Team", new {id = item.TeamId})"> @item.NameTeamProject </a>
+                            }
+                            else
+                            {
+                                if (ViewBag.IsAdmin || access)
+                                {
+                                    <a href="@Url.Action("Index", "Team", new {id = item.Id})" class="btn btn-success btn-xs"> @Resources.Resource.Assign </a>
+                                }
+                                else
+                                {
+                                    <div>-</div>
+                                }
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (@item.CountMembers > 0)
+                            {
+                                @item.CountMembers
+                            }
+                            else
+                            {
+                                <div>-</div>
+                            }
+                        </td>
+                        <td>
+                            @if (ViewBag.IsAdmin || access)
+                            {
+                                <a href="#" data-id="@item.Id" type="button" data-toggle="modal" data-target="#modalDetails"
+                                   class="showProjectModal btn btn-primary btn-xs">@Resources.Resource.Edit</a>
+                                    <div class="modal fade" id="modalDetails" tabindex="-1" role="dialog"
+                                         aria-labelledby="modalDetailsLabel" aria-hidden="true"></div>
+
+                                if (item.CountIssues == 0 && item.CountSprints == 0)
+                                {
+                                    <a href="#" data-id="@item.Id" type="button" data-toggle="modal" data-target="#modalDelete"
+                                       class="showProjectModalDelete btn btn-primary btn-xs">@Resources.Resource.Delete</a>
+                                        <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true"></div>
+                                }
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            }
+        </table>
+    </div>
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
+        });
+
+        $(".showProjectModal").click(function () {
+            $.get("@Url.Action("Edit", "Project")" + "/" + $(this).attr("data-id")).success(function (data) {
+                $("#modalDetails").html(data);
+            });
+        });
+
+        $(".showProjectModalDelete").click(function () {
+            $.get("@Url.Action("Delete", "Project")" + "/" + $(this).attr("data-id")).success(function (data) {
+                $("#modalDelete").html(data);
+            });
+        });
+
+        if ($(".viewbag-message").val() !== "") {
+            $(document).ready(function () {
+                $("#myModalBox").modal('show');
+            });
+        }
+
+        $(".showProjectModalCreate").click(function () {
+            $.get("@Url.Action("Create", "Project")").success(function (data) {
+                $("#modalCreate").html(data);
+            });
+        });
+
+        @*$(document).ready(function() {
+            $.ajaxSetup({ cache: false });
+            $(".viewDialog").on("click", function(e) {
+                e.preventDefault();
+                $("<div id='dialogContent'></div>")
+                    .addClass("dialog")
+                    .appendTo("body")
+                    .load(this.href)
+                    .dialog({
+                        title: "Create new project",
+                        close: function () {$(this).remove()},
+                        show: { effect: 'drop', direction: "up" },
+                        height: 550,
+                        width: 600,
+                        modal: true,
+                        buttons: {
+                            "Create": function() {
+                                $.ajax({
+                                    url: "@Url.Action("Create", "Project")",
+                                    type: "POST",
+                                    data: $('form').serialize(),
+                                    datatype: "json",
+                                    success: function(result) {
+
+                                        $("#dialogContent").html(result);
+                                    }
+                                });
+                            },
+                            "Cancel": function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+
+            $(".close").on("click", function(e) {
+                e.preventDefault();
+                $(this).closest(".dialog").dialog("close");
+            });
+        });*@
+    </script>
+}
+
+
+

@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Sprints";
+}
+
+@if (ViewBag.ListProjects != null)
+{
+    <div class="col-sm-12 overflow sprint-top-menu">
+        <div class="create-iteration-header affix-top" data-spy="create-iteration-header">
+            <ul class="nav nav-pills pull-right">
+                <li>
+                    <a href="#" type="button" class="closeAllSprint btn btn-success" style="margin: -5px 7px ;">
+                        @Resources.Resource.CloseAllSprint
+                    </a>
+                </li>
+                <li>
+                    <div class="modal fade" id="modalCreateSprint" tabindex="-1" role="dialog" aria-labelledby="modalCreateLabel" aria-hidden="true"></div>
+                    <a href="#" type="button" data-toggle="modal" data-target="#modalCreateSprint" class="showSprintModalCreate btn btn-success" style="margin-top: -5px;">
+                        @Resources.Resource.CreateSprint
+                    </a>
+                </li>
+            </ul>
+
+
+            <div class="form-group">
+                @Html.Label("selectedProject", @Resources.Resource.Project, new { @class = "nav nav-pills pull-left", @style = "margin-top: 5px" })
+                <div class="col-md-4 ">
+                    @Html.DropDownList("ListProjects", null, new { @class = "form-control dropdown-project", id = "selectedProject" })
+                </div>
+            </div>
+
+        </div>
+        <br />
+    </div>
+
+    <div class="sprintsOfSelectedProjct" style="padding-top: 50px;">
+        <div class="loading-block">
+            <div class="text-center">
+                <img src="~/Content/images/loading.gif" width="80" />
+            </div>
+        </div>
+    </div>
+
+        @Html.Hidden("CountIssues", Url.Action("CountIssues"))
+}
+else
+{
+    <div align="center">
+        <h3 style="color: gray;"> @Resources.Resource.NoAvailableProjects</h3>
+    </div>
+}
+
+<div class="modal fade" id="modalShowAddTask" tabindex="-1" role="dialog" aria-labelledby="modalShowSprintLabel" aria-hidden="true"></div>
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        $(".showSprintModalCreate").click(function() {
+            var id = $('#selectedProject').val();
+            $.get("@Url.Action("Create", "Sprint")" + "/" + id).success(function(data) {
+                $("#modalCreateSprint").html(data);
+            });
+        });
+
+        $(".closeAllSprint").click(function () {
+            $(".board-panel").removeClass("opened");
+            $(".sprint-panel").removeClass("opened");
+            $(".sprint-container").remove();
+            $(".board-container").remove();
+        });
+
+        function showButtonCreateSprint(id) {
+            $(".showSprintModalCreate").hide();
+            if(id != null){
+            $.get("@Url.Action("AccessByCreateSprint", "Sprint")" + "/" + id).success(function (data) {
+                if (data) {
+                    $(".showSprintModalCreate").show();
+                }
+            });
+            } 
+        }
+
+        $('#selectedProject').before(function() {
+            var id = $(this).val();
+            $(".sprintsOfSelectedProjct").load('@Url.Action("GetSprintsByProjectId", "Sprint")' + "/" + id);
+            showButtonCreateSprint(id);
+
+        });
+
+        $('#selectedProject').change(function() {
+            var id = $(this).val();
+            $(".sprintsOfSelectedProjct").load('@Url.Action("GetSprintsByProjectId", "Sprint")' + "/" + id);
+            showButtonCreateSprint(id);
+        });
+    </script>
+
+}

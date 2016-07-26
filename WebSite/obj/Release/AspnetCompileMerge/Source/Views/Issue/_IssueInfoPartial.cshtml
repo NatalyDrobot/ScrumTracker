@@ -1,0 +1,32 @@
+﻿@using DataLayer.Entities
+@model WebSite.Models.Issue.IssueInfoModel
+@{
+    ViewBag.Title = "_IssueInfoPartial";
+}
+
+<div id="issue-tabs">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#issue-tab-1">@Resources.Resource.IssueInfo</a></li>
+        <li><a data-toggle="tab" href="#issue-tab-2">@Resources.Resource.IssueComments</a></li>
+        <li><a data-toggle="tab" href="#issue-tab-3">@Resources.Resource.TimeTracking</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="issue-tab-1" class="tab-pane fade in active">
+                <div class="issue-info-wrapper">
+                    @Html.Partial("~/Views/Issue/_IssueDataPartial.cshtml")
+                </div>
+        </div>
+        <div id="issue-tab-2" class="tab-pane fade">
+            <div class="panel panel-primary issue-info-wrapper">
+           
+                @Html.Partial("~/Views/Issue/_IssueCommentsPartial.cshtml")
+            </div>
+        </div>
+        <div id="issue-tab-3" class="tab-pane fade">
+            <div class="panel panel-primary issue-info-wrapper">
+                @Html.Partial("~/Views/Issue/_IssueTimeTrackingPartial.cshtml")
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" value="@ViewBag.Permission.ToString().ToLower()" id="viewbag-issue-permission" />

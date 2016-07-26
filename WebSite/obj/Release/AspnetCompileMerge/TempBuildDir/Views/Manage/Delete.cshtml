@@ -1,0 +1,44 @@
+﻿@model WebSite.Models.ProfileViewModel
+@using Resources 
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">@Resource.WarningDelete</h4>
+        </div>
+
+        <div class="modal-body">
+            <dl class="dl-horizontal">
+                <dt><img id="avatar" src=@Url.Content($"/Content/images/avatars/{Model.Avatar}") alt="avatar" height="52" width="50" /></dt>
+                <dd></dd>
+                @Html.ValidationSummary(true)
+                <dt> @Html.DisplayName(Resource.Login) </dt>
+                <dd> @Html.DisplayFor(model => model.Email) </dd>
+
+                <dt> @Html.DisplayName(Resource.FirstName) </dt>
+                <dd> @Html.DisplayFor(model => model.FirstName) </dd>
+
+                <dt> @Html.DisplayName(Resource.LastName) </dt>
+                <dd> @Html.DisplayFor(model => model.LastName) </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="modal-footer">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" class="btn btn-primary">@Resource.Delete</button>
+                        <button type="reset" class="btn btn-primary" data-dismiss="modal">@Resource.Close</button>
+                    </div>
+                </div>
+             }
+                </div>
+            </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

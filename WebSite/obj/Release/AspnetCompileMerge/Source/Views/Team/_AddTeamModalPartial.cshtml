@@ -1,0 +1,33 @@
+﻿@model WebSite.Models.Team.AddTeamModel
+@{
+    ViewBag.Title = "_AddTeamModalPartial";
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">&times;</button>
+        <h4>@Resources.Resource.CreateTeamInfo</h4>
+    </div>
+    <div class="modal-body">
+        <div id="editTeamError"></div>
+        @using (Html.BeginForm("AddTeam", "Team", FormMethod.Post, new { Id = "AddTeamForm" }))
+        {
+        @Html.AntiForgeryToken()
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = Resources.Resource.Name })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = Resources.Resource.Description })
+            @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+
+            <div class="row addTeamButtons">
+                <div class="col-md-6 text-center">
+                    <button class="btn btn-primary">@Resources.Resource.Save</button>
+                </div>
+                <div class="col-md-6 text-center">
+                    <button class="btn btn-primary" data-dismiss="modal" area-hidden="true">@Resources.Resource.Cancel</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

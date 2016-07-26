@@ -1,0 +1,101 @@
+﻿@model WebSite.Models.ProfileViewModel
+@using Resources
+
+@{
+    ViewBag.Title = @Resource.ProfileTitle;
+}
+
+<h2>@Resource.ProfileTitle</h2>
+
+@using (Html.BeginForm("ProfileUser", "Manage", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.AntiForgeryToken()
+
+    <h4>@Resource.ProfileH4</h4>
+    <p class="text-success">@ViewBag.StatusMessage</p>
+    <hr/>
+    <div class="col-md-3 col-md-push-1">
+        <img id="avatar" src=@Url.Content($"/Content/images/avatars/{Model.Avatar}") alt="avatar" height="102" width="100"/>
+        <input id="file" type="file" name="image" accept="Image/*"/>
+    </div>
+        <div class="form-horizontal col-md-6 ">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.EditorFor(model => model.Department, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Culture, htmlAttributes: new { @class = "control-label col-md-3" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.Culture, ViewBag.Cultures as SelectList, null, new { @class = "form-control", @style = "width:70px;" })
+                </div>
+            </div>
+
+            @*<dl class="dl-horizontal  col-md-pull-2">
+                <dt>@Resource.Password</dt>
+                <dd >
+                    [@Html.ActionLink(Resource.ChangePassword, "ChangePassword")]
+                </dd>
+            </dl>*@
+            <div class="form-group">
+                <div class="control-label col-md-3"> @Resource.Password </div>
+                <div class="col-md-9" style="top: 11px;"> [@Html.ActionLink(Resource.ChangePassword, "ChangePassword")] </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-3 col-md-9 ">
+                    <input type="submit" value=@Resource.Save class="btn btn-default" style="width: auto;"/>
+                </div>
+            </div>
+
+        </div>
+}
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#file').jInputFile();
+
+            $('#file').change(function () {
+                var img = $('#avatar');
+                var file = $('#file').prop('files')[0];
+                if (typeof file !== 'undefined'&& file.type.indexOf("image")!==-1)
+                {
+                    var fr = new FileReader();
+                    fr.onload = function (e)
+                    {
+                        img.attr("src", e.target.result);
+                    };
+                    fr.readAsDataURL(file);
+                };
+            });
+        });
+    </script>
+}
+

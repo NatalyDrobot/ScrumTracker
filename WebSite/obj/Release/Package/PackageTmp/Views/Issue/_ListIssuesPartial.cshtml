@@ -1,0 +1,70 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@model WebSite.Models.Issue.IssueModel
+@{
+    ViewBag.Title = "_ListIssuesPartial";
+}
+
+
+<div class="row headings-for-issues">
+    <h5 class="col-md-3">@Resources.Resource.IssuePriority</h5>
+    <h5 class="col-md-3">@Resources.Resource.IssueState</h5>
+    <h5 class="col-md-3">@Resources.Resource.IssueType</h5>
+    <h5 class="col-md-3">@Resources.Resource.Created</h5>
+</div>
+<ul id="issue-list">
+    @foreach (var issue in Model.Issues)
+    {
+    <li class="issue-item" data-id="@issue.Id">
+        <div class="row issue-list-item-info">
+            <div class="col-md-11 issue-list-item-name">
+                <p>
+                    <a href="#" data-id="@issue.Id" type="button"><span class="@(issue.State.Name == "Fixed" ||issue.State.Name == "Verified" ? "task-ended" : "")">@issue.Project.Code-@issue.Number </span> @issue.Name</a>
+                </p>
+            </div>
+            <div class="col-md-1 issue-list-delete">
+                <div class="delete-issue">
+                    @if (ViewBag.Permission)
+                {
+                <a href="@Url.Action("DeleteIssueInfo", "Issue", new {id = issue.Id})" class="issue-delete"><i class="fa  fa-times"></i></a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row issue-list-item-info">
+            <div class="col-md-3 issue-list-priority-name"> @Html.DisplayFor(model => issue.Priority.Name) </div>
+            <div class="col-md-3 issue-list-state-name"> @Html.DisplayFor(model => issue.State.Name) </div>
+            <div class="col-md-3 issue-list-type-name"> @Html.DisplayFor(model => issue.IssueType.Name) </div>
+            <div class="col-md-3 issue-list-sprint-name">@issue.DateCreate.ToShortDateString()</div>
+        </div>
+        <input type="hidden" class="issue-id" value="@issue.Id" />
+    </li>
+    }
+</ul>
+<input type="hidden" value="@ViewBag.IssueFilter" id="viewbagIssueFilter" />
+<input type="hidden" value="@ViewBag.IssuePage" id="viewbagIssuePage" />
+<input type="hidden" value="@ViewBag.ProjectId" id="viewbagIssueProject" />
+<input type="hidden" value="@ViewBag.IssueSortFilter" id="viewbagIssueSortFilter" />
+
+
+
+<div class="text-center">
+    @if (Model.Issues.PageCount > 1)
+    {
+    @Html.PagedListPager((IPagedList)Model.Issues,
+        page => Url.Action("SearchIssues", new
+        {
+            page,
+            term = ViewBag.IssueFilter,
+            projectId = ViewBag.ProjectId,
+            sortFilter = ViewBag.IssueSortFilter
+        }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(PagedListRenderOptions.PageNumbersOnly,
+            new AjaxOptions
+            {
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "Get",
+                UpdateTargetId = "issues"
+            }))
+
+    }
+</div>

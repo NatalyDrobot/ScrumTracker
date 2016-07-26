@@ -1,0 +1,75 @@
+﻿@using WebSite.Models.Team
+@model WebSite.Models.Team.TeamModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    <div class="">
+        <button class="btn teamBtn" id="addTeamBtn">@Resources.Resource.CreateTeam</button>
+            @*This button should be hidden if project's id is not in url*@
+            @if (ViewBag.ProjectId != null)
+            {
+                <a href="@Url.Action("AssignTeamByProject", "Team", new {projectId = @ViewBag.ProjectId})"
+                   id="assignTeamBtn" class="btn">@Resources.Resource.AssignTeam</a>
+            }
+    </div>
+    <div class="row teamTracker">
+        <div class="list-wrap col-md-4">
+            <div class="teams text-center">
+                <input type="text" name="name" id="searchTeamInput" placeholder="@Resources.Resource.SearchTeams" data-autocomplete-source='@Url.Action("AutocompleteTeamSearch", "Team")' />
+                @Html.Hidden("GetTeamsByTerm", Url.Action("SearchTeams"))
+                <div id="teams">
+                    @Html.Partial("~/Views/Team/_ListTeamsPartial.cshtml")
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-8 row wrap-for-draggable">
+            <div class="list-wrap col-md-6">
+                <div class="userteampos text-center">
+                    <input type="hidden" Id="selectedTeam" value="." />
+                    <div id="userTeamPos">
+
+                        @Html.Partial("~/Views/Team/_ListUsersTeamPosPartial.cshtml")
+                    </div>
+                    @Html.Hidden("GetUserTeamPos", Url.Action("GetUserTeamPostions"))
+                    @Html.Hidden("AddUserToTeam", Url.Action("AddUserToTeam"))
+                </div>
+            </div>
+            <div class="users-list col-md-6">
+                <div class="users text-center">
+                    <input type="text" name="name" id="searchUserInput" placeholder="@Resources.Resource.SearchUsers"  data-autocomplete-source='@Url.Action("AutocompleteUserSearch", "Team")' />
+
+                    <div id="users">
+                        @Html.Partial("~/Views/Team/_ListUsersPartial.cshtml")
+                    </div>
+                    @Html.Hidden("GetUsersByTerm", Url.Action("SearchUsers"))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modEditTeamDialog" class="modal fade">
+    <div id="dialogEditTeamContent" class="modal-dialog">
+
+    </div>
+</div>
+
+<div id="modDeleteTeamDialog" class="modal fade">
+    <div id="dialogDeleteTeamContent" class="modal-dialog"></div>
+</div>
+
+<div id="modDeleteUserTeamPosDialog" class="modal fade">
+    <div id="dialogDeleteUserTeamPosContent" class="modal-dialog">
+
+    </div>
+</div>
+
+<div id="modAddTeamDialog" class="modal fade">
+    <div id="dialogAddTeamPosContent" class="modal-dialog">
+        @Html.Partial("~/Views/Team/_AddTeamModalPartial.cshtml", new AddTeamModel())
+    </div>
+</div>
+

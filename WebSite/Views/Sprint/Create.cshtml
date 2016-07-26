@@ -1,0 +1,193 @@
+﻿@model WebSite.Models.Sprint.SprintModel
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Create", "Sprint", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ProjectId)
+    @Html.HiddenFor(model => model.NameProject)
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@Resources.Resource.CreateNewSprint</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <fieldset>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Project, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <input type="text" readonly="readonly" class="form-control" value=" @Model.NameProject">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Name, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.DateBegin, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.DateBegin, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control",
+                                   id = "dateStart",
+                                   @type = "date",
+                                   @Value = @Model.DateBegin.ToString("yyyy-MM-dd")
+                                   //@Value = @Model.DateBegin.ToShortDateString()
+                               }
+                           })
+                                @Html.ValidationMessageFor(model => model.DateBegin, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.DateEnd, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.DateEnd, new
+                           {
+                               htmlAttributes = new
+                               {
+                                   @class = "form-control",
+                                   id = "dateEnd",
+                                   @type = "date",
+                                   @Value = @Model.DateEnd.ToString("yyyy-MM-dd")
+                                   //@Value = @Model.DateEnd.ToShortDateString()
+                               }
+                           })
+                                @Html.ValidationMessageFor(model => model.DateEnd, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Description, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.Description, new
+                           {
+                               @class = "form-control",
+                               rows = 3,
+                               id = "textArea",
+                               style = "-moz-resize:none;-ms-resize:none;-o-resize:none;resize:none;"
+                           })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value=@Resources.Resource.Create class="btn btn-primary" />
+                    <button type="reset" class="btn btn-primary" data-dismiss="modal">@Resources.Resource.Close</button>
+                </div>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    <input id="dateFormate" type="hidden"
+           value='@System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower().Replace("yyyy", "yy")' />
+}
+
+<script type="text/javascript">
+
+    $.validator.unobtrusive.parse($("form"));
+
+    //$(function () {
+
+    //    //if (System.Threading.Thread.CurrentThread.CurrentCulture.Name === "ru-RU") {
+    //        //$("input[type='text']")
+    //        //.datepicker({ dateFormat: 'dd/mm/yy' })
+    //        //.get(0).setAttribute("type", "text");
+    //    //}
+    //    //else {
+    //    //    $("input[type='date']")
+    //    //    .datepicker({ dateFormat: 'MM/dd/yy' })
+    //    //    .get(0).setAttribute("type", "text");
+    //    //}
+
+    //    $("#dateStart").datepicker({
+    //        //dateFormat: "dd-mm-yyyy",
+    //        //dateFormat: $('#dateFormate').val(),
+    //        changeMonth: true,
+    //        numberOfMonths: 1,
+    //        onClose: function (selectedDate) {
+    //            var newDateEnd = new Date(selectedDate);
+    //            newDateEnd.setDate(newDateEnd.getDate() + 14);
+    //            $("#dateEnd").datepicker("option", "minDate", selectedDate).datepicker("setDate", newDateEnd);
+
+    //        }
+    //    });
+
+    //    $("#dateEnd").datepicker({
+    //        //dateFormat: $('#dateFormate').val(),
+    //        changeMonth: true,
+    //        numberOfMonths: 1
+    //    });
+
+        //$.datepicker.setDefaults($.datepicker.regional['en']);
+
+    //    //$.validator.addMethod('date',
+    //    //    function (value, element) {
+    //    //        var ok = true;
+    //    //        try {
+    //    //            $.datepicker.parseDate('dd/mm/yy', value);
+    //    //        }
+    //    //        catch (err) {
+    //    //            ok = false;
+    //    //        }
+    //    //        return ok;
+    //    //    });
+    //});
+
+
+
+
+    //$(function () {
+    //    if (!Modernizr.inputtypes.date) {
+    //$(function() {
+    //    $(document).ready(function() {
+    //        //$("input[type='date']")
+    //        //$("#dateStart")
+    //        //    .datepicker();
+    //        $("#dateStart")
+    //            .datepicker({ dateFormat: $('#dateFormate').val() })
+    //        .get(0).setAttribute("type", "text");
+
+    //        //$("#dateEnd")
+    //        //    .datepicker();
+
+    //        $("#dateEnd")
+    //            .datepicker({ dateFormat: $('#dateFormate').val() })
+    //        .get(0).setAttribute("type", "text");
+    //    });
+    //});
+    //});
+
+
+    $(function () {
+        if (!Modernizr.inputtypes.date) {
+            $(function () {
+                $("input[type='date']")
+                    .datepicker({ dateFormat: 'dd/mm/yy' })
+                    .get(0).setAttribute("type", "text");
+            });
+        }
+    });
+
+</script>

@@ -1,0 +1,43 @@
+﻿@using DTO.Entities
+@model WebSite.Models.Issue.IssueInfoModel
+@{
+    ViewBag.Title = "_IssueTimeTrackingPartial";
+    var user = (UserDto)Session["CurrentUser"];
+}
+<input type="hidden" id="time-tracking-spent-time" value="" />
+@Html.Hidden("add-time-tracking-action", Url.Action("AddTimeTracking"))
+@if (ViewBag.Permission)
+{
+    <div class="row time-tracking-create">
+        <div class="col-md-1 time-tracking-avatar">
+            <img src=@Url.Content($"/Content/images/avatars/{user.Avatar}") alt="avatar"/>
+
+        </div>
+        <div class="col-md-2 time-tracking-fio">
+            <p> @user.FirstName @user.LastName </p>
+        </div>
+        <div class="col-md-4 time-tracking-comment"><input type="text" placeholder="@Resources.Resource.TimeTrackingComment" id="time-tracking-comment-input"/>
+        </div>
+        <div class="col-md-2 time-tracking-estimate">
+            <input type="text" placeholder="1h20m" class="time-tracking-estimate-input"/>
+            <p class="time-tracking-estimate-input-error">Wrong format: 1h20m</p>
+        </div>
+        <div class="col-md-2 time-tracking-types">
+            @Html.DropDownListFor(m => m.IssueTypeId, ViewBag.TimeTrackingTypes as SelectList, "", new {@class = "selected-time-tracking-type", id = "time-tracking-type-for-add"})
+        </div>
+        <div class="col-md-1 time-tracking-add-time-tracking">
+            <a class="add-time-tracking-btn"><i class="fa fa-paper-plane" aria-hidden="true"></i></a>
+        </div>
+    </div>
+}
+<ul class="time-tracking-list">
+    @if (Model.TimeTrackings != null)
+    {
+        foreach (var timeTrackingDto in Model.TimeTrackings.OrderBy(x=>x.DateCreate))
+        {
+            @Html.Partial("~/Views/Issue/_SingleTimeTracking.cshtml", timeTrackingDto);
+        }
+    }
+</ul>
+
+

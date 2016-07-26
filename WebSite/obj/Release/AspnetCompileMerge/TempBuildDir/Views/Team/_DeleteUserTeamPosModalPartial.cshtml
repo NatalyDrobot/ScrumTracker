@@ -1,0 +1,27 @@
+﻿@model WebSite.Models.Team.DeleteUserTeamPosModel
+@{
+    ViewBag.Title = "_DeleteUserTeamPosPartial";
+}
+
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">&times;</button>
+        <h4>@Resources.Resource.DeleteConfirm</h4>
+    </div>
+    <div class="modal-body">
+        @Html.HiddenFor(x => x.UserId, new { @class = "UserInTeamIdForDelete" })
+        @Html.HiddenFor(x => x.TeamId, new { @class = "TeamInUserTeamPosIdForDelete" })
+
+
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <button id="btnConfirmDeleteUserTeamPos" class="btn btn-primary">OK</button>
+                @Html.Hidden("deleteUserTeamPos", Url.Action("DeleteUserTeamPos"))
+            </div>
+            <div class="col-md-6 text-center">
+                <button class="btn btn-primary" data-dismiss="modal" area-hidden="true">@Resources.Resource.Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

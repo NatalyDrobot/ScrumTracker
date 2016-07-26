@@ -1,0 +1,210 @@
+﻿@model IEnumerable<WebSite.Models.DashBoardView>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron" style="margin-top:25px;">
+
+    @{ int i = 0; string chartScript = String.Empty;}
+
+    @if (Model.Count() == 0)
+    {
+
+        <div class="no-projects">
+            <div>@Resources.Resource.NO_PROJECTS_YET</div>
+        </div>
+
+    }
+    else {
+
+        foreach (var sprint in Model)
+        {
+
+            <div class="row item_@i">
+                <div class="col-md-8">
+                    <h3>
+                        @Html.ActionLink(sprint.SprintName, "Index", "Sprint", new { id = sprint.SprintId }, null)
+                        ( @Html.ActionLink(sprint.ProjectName, "FilterProjectsByName", "Project", new { id = sprint.ProjectName }, null) )
+                    </h3>
+                    <ul class="nav nav-pills">
+
+                        @if (sprint.EndDate < DateTime.Now)
+                        {
+                            <li class='counter-head label-danger'>
+                                <h5>X</h5>
+                                <div>past</div>
+                                <div>due</div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class='counter-head label-primary'>
+                                <h5>@Convert.ToInt32((sprint.EndDate.AddDays(1) - @DateTime.Now).TotalDays) </h5>
+                                <div>@Resources.Resource.Days</div>
+                                <div>@Resources.Resource.Left</div>
+                            </li>
+                        }
+                        <li class="counter-head label-warning">
+                            <h5>@sprint.IssueList.Where(x=>x.State.Name == "Open").Count()<br></h5>
+                            <div>@Resources.Resource.Task</div>
+                            <div>@Resources.Resource.Left</div>
+                        </li>
+
+                        <li class="counter-head label-info">
+                            <h5>@sprint.IssueList.Where(x => x.State.Name == "In Progress").Count()<br></h5>
+                            <div>@Resources.Resource.Task</div>
+                            <div>@Resources.Resource.InProgress</div>
+                        </li>
+
+                        <li class="counter-head label-success">
+                            <h5>@sprint.IssueList.Where(x => x.State.Name == "Fixed").Count()<br></h5>
+                            <div>@Resources.Resource.Task</div>
+                            <div>@Resources.Resource.Done</div>
+                        </li>
+                    </ul>
+                    <a href="#" onclick="drawBurnDownChart(@i)"><i class="glyphicon glyphicon-alert" ></i>@Resources.Resource.SPRINT_DETAILS</a>
+                    <div id="burndownChart_@i"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="char_@i chart-item"></div>
+                </div>
+                <hr />
+            </div>
+            i = i + 1;
+        }
+        <div id="curve_chart"></div>
+
+        @section scripts{
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+
+                function ShowBlockChart(num) {
+                    $(".item_" + num).find(".open").removeClass("open").addClass("closed");
+                    $(".item_" + num).find(".totalCharts").removeClass("closed").addClass("open");
+                    drawBurnDownChart();
+                }
+
+                // Load the Visualization API and the piechart package.
+                google.charts.load('current', { 'packages': ['corechart','line'] });
+                google.charts.setOnLoadCallback(drawChart);
+
+
+
+
+                //   google.charts.setOnLoadCallback(drawBurnDownChart);
+
+                function drawBurnDownChart(num) {
+                
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('number', 'Day');
+                    data.addColumn('number', '@Resources.Resource.ACTUAL_BD');
+                    data.addColumn('number', '@Resources.Resource.IDEAL_DB');
+             
+
+                    data.addRows([
+                      [1,  37.8, 80.8],
+                      [2,  30.9, 69.5],
+                      [3,  25.4,   57],
+                      [4,  11.7, 18.8],
+                      [5,  11.9, 17.6],
+                      [6,   8.8, 13.6],
+                      [7,   7.6, 12.3],
+                      [8,  12.3, 29.2],
+                      [9,  16.9, 42.9],
+                      [10, 12.8, 30.9],
+                      [11,  5.3,  7.9],
+                      [12,  6.6,  8.4],
+                      [13,  4.8,  6.3],
+                      [14,  4.2,  6.2]
+                    ]);
+
+                    var options = {
+                        backgroundColor: '#1C1C1C',
+                        chart: {
+                            color: "#fff",
+                            legend: { position: 'none' },
+                           
+                            bar: { groupWidth: "95%" },
+                            legend: { position: "none" },
+                        },
+                       
+                    };
+
+                    var chart = new google.charts.Line(document.getElementById('burndownChart_'+num));
+
+                    chart.draw(data, options);
+                }
+
+
+
+                // Callback that creates and populates a data table,
+                // instantiates the pie chart, passes in the data and
+                // draws it.
+                function drawChart() {
+
+                    var chrtPlaceholders = document.getElementsByClassName("chart-item");
+
+                    for (var i = 0; i < chrtPlaceholders.length; i++) {
+
+                        var open = $(".item_" + i).find(".label-warning").find("h5").text() / 1;
+                        var inProgress = $(".item_" + i).find(".label-info").find("h5").text() / 1;
+                        var closed = $(".item_" + i).find(".label-success").find("h5").text() / 1;
+
+                        //var data = google.visualization.arrayToDataTable([
+                        //           ['Task', 'Hours per Day'],
+                        //           ['Tasks open', open],
+                        //           ['Tasks in progress', inProgress],
+                        //           ['Tasks done', closed]
+                        //                    ]);
+
+                        //var options = {
+                        //    color: '#fff',
+                        //    legend: { position: 'none' },
+                        //    backgroundColor: 'transparent',
+                        //    colors: ['#f39c12', '#3498db', '#00bc8c']
+                        //};
+
+                        //var chart = new google.visualization.PieChart(document.getElementsByClassName('char_'+i)[0]);
+                        //chart.draw(data, options);
+
+                        var data = google.visualization.arrayToDataTable([
+                ["Element", "Density", { role: "style" }],
+                ["@Resources.Resource.Open", open, "#f39c12"],
+                ["@Resources.Resource.InProgress", inProgress, "3498db"],
+                ["@Resources.Resource.Done", closed, "00bc8c"],
+                        ]);
+
+                        var view = new google.visualization.DataView(data);
+                        view.setColumns([0, 1,
+                                         {
+                                             calc: "stringify",
+                                             sourceColumn: 1,
+                                             type: "string",
+                                             role: "annotation"
+                                         },
+                                         2]);
+
+                        var options = {
+
+                            hAxis: {
+                                textStyle: { color: 'white' },
+                            },
+                            //vAxis: {
+                            //    textStyle: { color: 'red' },
+                            //},
+                            color: "#fff",
+                            legend: { position: 'none' },
+                            backgroundColor: 'transparent',
+                            bar: { groupWidth: "95%" },
+                            legend: { position: "none" },
+                        };
+                        var chart = new google.visualization.ColumnChart(document.getElementsByClassName('char_' + i)[0]);
+                        chart.draw(view, options);
+                    }
+                }
+            </script>
+        }
+    }
+</div>

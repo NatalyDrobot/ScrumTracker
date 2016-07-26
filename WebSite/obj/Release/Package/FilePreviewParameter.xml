@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="scrum-tracker-02" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\ScrumTrackerM1T1\\ScrumTracker\\WebSite\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\ScrumTrackerM1T1\\ScrumTracker\\WebSite\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="StickersConnectionString-Web.config Connection String" description="" value="Data Source=tcp:e7g8mfm8ri.database.windows.net,1433;Initial Catalog=scrumtracker02;Integrated Security=False;User ID=scrumtracker01@e7g8mfm8ri;Password=Instance@1;Connect Timeout=30;Encrypt=True" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\ScrumTrackerM1T1\\ScrumTracker\\WebSite\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='StickersConnectionString']/@connectionString" />
+  </parameter>
+</parameters>

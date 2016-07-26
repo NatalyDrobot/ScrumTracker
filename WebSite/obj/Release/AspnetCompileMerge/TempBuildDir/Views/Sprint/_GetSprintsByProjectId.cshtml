@@ -1,0 +1,279 @@
+﻿@model IEnumerable<WebSite.Models.Sprint.SprintModel>
+
+<div class="clearfix"></div>
+
+@if (Model != null)
+{
+    <div class="show-messege" align="center"></div>
+
+    foreach (var item in Model)
+    {
+        <div class="sprintrow">
+            <div class="col-sm-12 sprint-line" data-id="@item.Id">
+                <div class="row ">
+                    <div class="col-sm-4" style="padding-right: 0px; font-size: 14px;">
+                        <div class="nameSprint">
+                            <a href="#" data-id="@item.Id" type="button" data-toggle="modal" data-target="#modalShowSprint"
+                               class="showSprintModalEdit" style="height: 30px; padding-top: 5px">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </div>
+                        <div>
+                            @item.DateBegin.ToShortDateString() &nbsp;-&nbsp; @item.DateEnd.ToShortDateString()&nbsp;
+                            @if (item.StateName.Equals("Active"))
+                            {
+                                if (item.DateEnd >= DateTime.Now)
+                                {
+                                    <i style="color: coral">
+                                        ( @((item.DateEnd.Date - DateTime.Now.Date).Days)
+                                        @if ((item.DateEnd.Date - DateTime.Now.Date).Days == 1)
+                                        {
+                                            <i>@Resources.Resource.Day</i>
+                                        }
+                                        else
+                                        {
+                                            <i>@Resources.Resource.Days</i>
+                                        }
+                                        @Resources.Resource.Left )
+                                    </i>
+                                }
+                                else
+                                {
+                                    <i style="color: coral"> ( @Resources.Resource.PastDue ) </i>
+                                }
+                            }
+                            else if (item.StateName == "Closed")
+                            {
+                                <i style="color: coral"> ( @Resources.Resource.Closed ) </i>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-sm-5 " style="left: -30px;">
+                        <ul class="nav nav-pills text-center">
+                            <a class="countIssues btn btn-info"
+                               href="@Url.Action("Index","Issue", new {id = item.ProjectId, sprintId = item.Id, stateName = "all"})">
+                                <h4 style="margin:5px 0 -5px 0"> @item.CountAllIssues</h4>
+                                <h6>@Resources.Resource.CountMainIssues</h6>
+                            </a>
+
+                            <a class="countTaskOpen btn btn-danger"
+                               href="@Url.Action("Index","Issue", new {id = item.ProjectId, sprintId = item.Id, stateName = "open"})">
+                                <h4 style="margin:5px 0 -5px 0">@item.CountTaskOpen</h4>
+                                <h6>@Resources.Resource.TaskOpen</h6>
+                            </a>
+
+                            <a class="countTaskInProgess btn btn-success"
+                               href="@Url.Action("Index","Issue", new {id = item.ProjectId, sprintId = item.Id, stateName = "in-progress"})">
+                                <h4 style="margin:5px 0 -5px 0"> @item.CountTaskInProgess </h4>
+                                <h6>@Resources.Resource.TaskInProgress</h6>
+                            </a>
+
+                            <a class="countTaskFixed btn btn-warning"
+                               href="@Url.Action("Index","Issue", new {id = item.ProjectId, sprintId = item.Id, stateName = "fixed"})">
+                                <h4 style="margin:5px 0 -5px 0"> @item.CountTaskFixed</h4>
+                                <h6>@Resources.Resource.TaskFixed</h6>
+                            </a>
+
+                            <a class="countTaskVerified btn btn-primary"
+                               href="@Url.Action("Index","Issue", new {id = item.ProjectId, sprintId = item.Id, stateName = "verified"})">
+                                <h4 style="margin:5px 0 -5px 0"> @item.CountTaskVerified</h4>
+                                <h6>@Resources.Resource.Verified</h6>
+                            </a>
+                        </ul>
+                    </div>
+
+                    <div class="col-sm-3 btn-toolbar">
+                        <div class="btn-group pull-right">
+                            @if (!item.StateName.Equals("Active") && ViewBag.Access)
+                            {
+                                <a href="#" data-id="@item.Id" type="button" data-toggle="modal" data-target="#modalShowSprint"
+                                   class="@(item.CountAllIssues != 0 ? "hidden" : "") showSprintModalDelete btn btn-default btn-sm"
+                                   style="height: 30px; padding-top: 5px" title="@Resources.Resource.RemoveSprint">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                            }
+
+                            @if (ViewBag.Access)
+                            {
+                                <a href="#" data-id="@item.Id" type="button" data-toggle="modal" data-target="#modalShowSprint"
+                                   class="showSprintModalEdit btn btn-default btn-sm"
+                                   style="height: 30px; padding-top: 5px" title="@Resources.Resource.EditSprintTitle">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            }
+
+                            @if (!item.StateName.Equals("Closed") && ViewBag.Access && item.DateEnd > DateTime.Now)
+                            {
+                                <a href="#" class="startSprint btn btn-success btn-xs" style="height: 30px; padding-top: 5px"
+                                   data-id="@item.Id" data-projectId="@item.ProjectId" title="Start/Close sprint">
+
+                                    @if (item.StateName.Equals("New"))
+                                    {
+                                        <i class="fa fa-play"></i>
+                                    }
+                                    else
+                                    {
+                                        if (item.StateName.Equals("Active"))
+                                        {
+                                            <i class="fa fa-stop"></i>
+                                        }
+                                    }
+                                </a>
+                            }
+
+                            <a href="#" data-id="@item.Id" data-projectId="@item.ProjectId" class="sprint-flip btn btn-default btn-sm"
+                               style="height: 30px; padding-top: 5px">@Resources.Resource.Planning</a>
+
+                            @if (item.StateName.Equals("Active") && ViewBag.Access)
+                            {
+                                @*@Ajax.ActionLink("Planning", "ShowPlanning", new { sprintid = item.Id, projectId = item.ProjectId },
+                                    new AjaxOptions {UpdateTargetId = item.Id.ToString()}, new {@class="sprint-flip btn btn-default btn-sm"})*@
+                                <a href="#" data-id="@item.Id" data-projectId="@item.ProjectId" class="board-flip btn btn-default btn-sm"
+                                   style="height: 30px; padding-top: 5px">@Resources.Resource.AgileBoard</a>
+                            }
+
+                            @if ((ViewBag.Access && !item.StateName.Equals("Closed")) || (item.StateName.Equals("New") && !ViewBag.Access))
+                            {
+                                <a href="#" type="button" data-toggle="modal" data-target="#modalShowAddTask" data-id="@item.Id"
+                                   class="showModalAddIssue btn btn-success btn-xs" style="height: 30px; padding-top: 5px" title="New story">
+                                    <i class="fa fa-calendar-plus-o"></i>
+                                </a>
+                            }
+
+                        </div>
+                        @Html.Hidden("DoStartSprint", Url.Action("StartSprint", "Sprint"))
+                        @Html.Hidden("UpdateSprintIndex", Url.Action("GetSprintsByProjectId", "Sprint"))
+                        @Html.Hidden("AddIssueInSprint", Url.Action("AddIssueInSprint", "Sprint"), new { @class = "hidden" })
+                    </div>
+                </div>
+            </div>
+
+            @* PLANNING *@
+            <div class="sprint-panel"></div>
+
+            @* Agile Board *@
+            <div class="board-panel"></div>
+
+        </div>
+    }
+    <div class="modal fade" id="modalShowSprint" tabindex="-1" role="dialog" aria-labelledby="modalShowSprintLabel" aria-hidden="true"></div>
+    <div class="modal fade" id="modalShowAddTask" tabindex="-1" role="dialog" aria-labelledby="modalShowSprintLabel" aria-hidden="true"></div>
+    <div id="modAddIssueDialog" class="modal fade"><div id="dialogAddIssueContent" class="modal-dialog"></div></div>
+}
+<div class="clearfix"></div>
+
+@if (Model == null)
+{
+    <div align="center"><h3 style="color: gray;"> @Resources.Resource.NoSprintsInThisProject</h3></div>
+}
+
+
+<script type="text/javascript">
+
+    $(document.body).on('click', '.showSprintModalEdit', function () {
+        $.get("@Url.Action("Edit","Sprint")" + "/" + $(this).attr("data-id")).success(function (data) {
+            $("#modalShowSprint").html(data);
+        });
+    });
+
+    $(document.body).on('click', '.showSprintModalDelete', function () {
+        $.get("@Url.Action("Delete", "Sprint")" + "/" + $(this).attr("data-id")).success(function (data) {
+            $("#modalShowSprint").html(data);
+        });
+    });
+
+    //$(document.body).on('click', '.startSprint', function () {
+    $(".startSprint").click(function () {
+        var url = $("#DoStartSprint").val();
+        var sprintId = $(this).attr("data-id");
+        $.get(url + "/" + sprintId).success(function (data) {
+            var urlIndex = $("#UpdateSprintIndex").val();
+            // data[0] - changed sprint's state  (new)
+            // data[1] - error activing sprint - when project has already contained active sprint
+            // data[2] - error closing sprint - when sprint contains not fixed issues
+            if (data[2] === 0) {            // if not error closing sprint
+                if (data[1] === 1) {        // if has got error activing sprint
+                    $(".show-messege").html("<h3 style='color: gray;'> @Resources.Resource.ErrorStartSprint </h3>");
+                } else if (data[0] === 2) { // if sprint was closed
+                    $(".show-messege").html("<h3 style='color: gray;'> @Resources.Resource.SprintIsClosed </h3>");
+                } else {                    // if sprint was started
+                    $(".show-messege").html("<h3 style='color: gray;'> @Resources.Resource.SprintIsStarted </h3>");
+                }
+            } else {                        // if has got error closing sprint
+                $(".show-messege").html("<h3 style='color: gray;'> @Resources.Resource.ErrorCloseSprint </h3>");
+            }
+            setTimeout(function () {
+                $(".sprintsOfSelectedProjct").load(urlIndex);
+            }, 2000);
+
+        });
+    });
+
+    $(document.body).on('click', '.showModalAddIssue', function () {
+        var sprintId = $(this).attr("data-id");
+        var url = $("#AddIssueInSprint").val();
+        $.get(url + "/?sprintId=" + sprintId + "&typeName=Story&parentIssueId=null").success(function (data) {
+            $("#modalShowAddTask").html(data);
+        });
+    });
+
+    $(document.body).on('click', '#createIssuesInSprint', function () {
+        var parent = $(this).attr("data-parent");
+        if (parent === null || parent === "") {
+            var sprintId = $(this).attr("data-id");
+            var projectId = $(".sprint-flip").attr("data-projectId");
+            setTimeout(function () {
+                $(".sprintrow").find(".board-panel.opened").load('@Url.Action("GetIssuesBySprintId", "Sprint")' + "/?sprintId=" + sprintId);
+                $(".sprintrow").find(".sprint-panel.opened").load('@Url.Action("ShowPlanning", "Sprint")' + "/?sprintId=" + sprintId + "&projectId=" + projectId);
+                //$(".showSprintModalDelete").remove();
+                var element = $(".sprint-line[data-id='" + sprintId + "']");
+
+            }, 1000);
+        }
+    });
+
+    $(document).ready(function () {
+        $(".sprint-flip").click(function (e) {
+            e.preventDefault();
+            $(".board-panel.opened").slideUp("normal").removeClass("opened");
+            $(".board-container").remove();
+            var sprintId = $(this).attr("data-id");
+            var projectId = $(this).attr("data-projectId");
+            var element = $(this).closest(".sprintrow").find(".sprint-panel");
+            if ($(element).hasClass("opened")) {
+                $(element).slideUp();
+                $(element).removeClass("opened");
+                $(".sprint-container").remove();
+            } else {
+                $(".sprint-container").remove();
+                $(element).load('@Url.Action("ShowPlanning", "Sprint")' + "/?sprintId=" + sprintId + "&projectId=" + projectId);
+                $(element).slideDown("slow");
+                $(".sprint-panel.opened").slideUp("normal").removeClass("opened");
+                $(element).addClass("opened");
+            }
+        });
+
+        $(".board-flip").click(function (e) {
+            e.preventDefault();
+            $(".sprint-panel.opened").slideUp("normal").removeClass("opened");
+            $(".sprint-container").remove();
+            var sprintId = $(this).attr("data-id");
+            var element = $(this).closest(".sprintrow").find(".board-panel");
+            if ($(element).hasClass("opened")) {
+                $(element).slideUp();
+                $(element).removeClass("opened");
+                $(".board-container").remove();
+            } else {
+                $(".board-container").remove();
+                $(element).load('@Url.Action("GetIssuesBySprintId", "Sprint")' + "/?sprintId=" + sprintId);
+                $(element).slideDown("slow");
+                $(".board-panel.opened").slideUp("normal").removeClass("opened");
+                $(element).addClass("opened");
+            }
+        });
+
+
+    });
+
+</script>

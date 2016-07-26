@@ -1,0 +1,7 @@
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Release\BusinessLayer.Contracts.dll
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Release\BusinessLayer.Contracts.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Release\DTO.dll
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\bin\Release\DTO.pdb
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\obj\Release\BusinessLayer.Contracts.csprojResolveAssemblyReference.cache
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\obj\Release\BusinessLayer.Contracts.dll
+D:\ScrumTrackerM1T1\ScrumTracker\BusinessLayer.Contracts\obj\Release\BusinessLayer.Contracts.pdb

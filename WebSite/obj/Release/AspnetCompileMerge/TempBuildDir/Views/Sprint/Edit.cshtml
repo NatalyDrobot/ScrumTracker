@@ -1,0 +1,88 @@
+﻿@model WebSite.Models.Sprint.SprintModel
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Edit", "Sprint", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@Resources.Resource.EditSprint</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-inline">
+                    <fieldset>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.ProjectId)
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Project, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <input type="text" readonly="readonly" class="form-control" value=" @Model.NameProject">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.DateBegin, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.DateBegin, new { htmlAttributes = new { @class = "form-control", @type = "date", @Value = @Model.DateBegin.ToString("yyyy-MM-dd") } })
+                                @Html.ValidationMessageFor(model => model.DateBegin, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.DateEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.DateEnd, new { htmlAttributes = new { @class = "form-control", @type = "date", @Value = @Model.DateEnd.ToString("yyyy-MM-dd") } })
+                                @Html.ValidationMessageFor(model => model.DateEnd, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.Description, new {@class = "form-control", rows = 3, id = "textArea", style = "resize:none;"})
+                                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">@Resources.Resource.Save</button>
+                <button type="reset" class="btn btn-primary" data-dismiss="modal">@Resources.Resource.Close</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+}
+
+<script type="text/javascript">
+    $(function () {
+        if (!Modernizr.inputtypes.date) {
+            $(function () {
+                $("input[type='date']")
+                    .datepicker({ dateFormat: 'dd/mm/yy' })
+                    .get(0).setAttribute("type", "text");
+            });
+        }
+    });
+    $.validator.unobtrusive.parse($("form"));
+</script>

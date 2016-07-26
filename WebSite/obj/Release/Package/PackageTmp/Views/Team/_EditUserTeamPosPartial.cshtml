@@ -1,0 +1,30 @@
+﻿@model DTO.Entities.UserTeamPositionDto
+@{
+    ViewBag.Title = "_EditUserTeamPosPartial";
+}
+<input type="hidden" value="@Model.TeamId" class="hidden hiddenTeam" />
+<input type="hidden" value="@Model.UserId" class="hidden hiddenUser" />
+@if (Model.Position != null)
+{
+    if ((Model.UserId == ViewBag.TeamPmId && ViewBag.IsUserAdmin == false) ||(ViewBag.UserPermission == false))
+    {
+        @Html.DropDownListFor(m => m.Position.Id, ViewBag.Positions as SelectList, null, new {@class = "selectedPosition", @disabled = "disabled"})
+    }
+    else
+    {
+        @Html.DropDownListFor(m => m.Position.Id, ViewBag.Positions as SelectList, null, new { @class = "selectedPosition" })
+
+    }
+}
+else
+{
+    if ((Model.UserId == ViewBag.TeamPmId && ViewBag.IsUserAdmin == false) || (ViewBag.UserPermission == false))
+    {
+        @Html.DropDownListFor(m => m.Position.Id, ViewBag.Positions as SelectList, "", new {@class = "selectedPosition", @disabled = "disabled" })
+    }
+    else
+    {
+    @Html.DropDownListFor(m => m.Position.Id, ViewBag.Positions as SelectList, "", new { @class = "selectedPosition" })
+    }
+}
+

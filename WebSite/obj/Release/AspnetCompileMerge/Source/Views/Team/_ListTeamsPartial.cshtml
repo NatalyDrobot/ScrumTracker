@@ -1,0 +1,106 @@
+﻿@using System.Diagnostics
+@using Microsoft.AspNet.Identity
+@using PagedList
+@using PagedList.Mvc
+@model WebSite.Models.Team.TeamModel
+@{
+    ViewBag.Title = "_ListTeamsPartial";
+}
+
+<ul id="teamList">
+    <div class="row headings-for-teams">
+        <div class="col-md-3 text-center">
+            <p>@Resources.Resource.Name</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <p>@Resources.Resource.Projects</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <p>@Resources.Resource.Created</p>
+        </div>
+    </div>
+
+    @foreach (var team in Model.Teams)
+    {
+
+    <li class="teamItem" data-id="@team.Id">
+
+        <div class="meta">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3 class="teamName">@team.Name</h3>
+                </div>
+                <div class="col-md-3">
+                    <span><a href="@Url.Action("GetProjectsByTeamId", "Project", new {id = team.Id})">@team.Projects.Count</a></span>
+                </div>
+                <div class="col-md-3">
+
+                    <span>@team.DateCreated.ToShortDateString()</span>
+                </div>
+
+                @{
+                    if (ViewBag.IsUserAdmin == true)
+                    {
+                        ViewBag.AccessToEditTeam = true;
+                    }
+                    else
+                    {
+
+                        var userTeamPos = team.UserTeamPositions.ToList().Find(x => x.UserId == HttpContext.Current.User.Identity.GetUserId());
+                        if (userTeamPos != null && userTeamPos.Position != null)
+                        {
+                            if (userTeamPos.Position.Name == "Project Manager")
+                            {
+                                ViewBag.AccessToEditTeam = true;
+                            }
+                            else
+                            {
+                                ViewBag.AccessToEditTeam = false;
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.AccessToEditTeam = false;
+                        }
+                    }
+                }
+                @if (ViewBag.AccessToEditTeam)
+                {
+                   
+                    <div class="col-md-3 text-right">
+                        <div class="edit-team">
+                            <a href="@Url.Action("EditTeamInfo", "Team", new {id = team.Id})" class="teamEdit"><i class="fa  fa-pencil-square-o"></i></a>
+                            <a href="@Url.Action("DeleteTeamInfo", "Team", new {id = team.Id})" class="teamDelete"><i class="fa  fa-times"></i></a>
+                        </div>
+                    </div>
+                  
+                }
+            </div>
+        </div>
+        <input type="hidden" class="teamId" value="@team.Id" />
+    </li>
+
+ }
+
+</ul>
+<input type="hidden" value="@ViewBag.TeamFilter" id="viewbagTeamFilter" />
+<input type="hidden" value="@ViewBag.TeamPage" id="viewbagTeamPage" />
+
+
+@if (Model.Teams.PageCount > 1)
+{
+    @Html.PagedListPager((IPagedList)Model.Teams,
+        page => Url.Action("SearchTeams", new
+        {
+            page,
+            term = ViewBag.TeamFilter
+        }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(PagedListRenderOptions.PageNumbersOnly,
+            new AjaxOptions
+            {
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "Get",
+                UpdateTargetId = "teams"
+            }))
+
+}
+

@@ -1,0 +1,63 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href='@Url.Content("~/Content/themes/base/all.css")' rel="stylesheet" type="text/css" />
+    @Styles.Render("~/css/bootstrap")
+    @Styles.Render("~/css/main")
+
+</head>
+<body>
+    <div class="navbar navbar-default  ">
+        <div class="container">
+
+            <div class="navbar-header">
+                <div>
+                    <a href="@Url.Action("Index", "Home", new {area = ""})">
+                        <img src="~/Content/images/logo.png" width="225" style="float: left; margin: 3px 10px 0 0;"/>
+                    </a>
+                    @*@Html.ActionLink("SCRUMTRACKER", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", style= "text-shadow: none;" })*@
+                </div>
+            </div>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar">54645</span>
+                <span class="icon-bar">5646</span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <ul class="nav navbar-nav ">
+                <li>@Html.ActionLink("Dashboard", "Index", "Home")</li>
+                <li>@Html.ActionLink(Resources.Resource.Projects, "Index", "Project")</li>
+                <li>@Html.ActionLink(Resources.Resource.Sprints, "Index", "Sprint")</li>
+                <li>@Html.ActionLink(Resources.Resource.Issues, "Index", "Issue")</li>
+                <li>@Html.ActionLink(Resources.Resource.Teams, "Index", "Team")</li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav"></ul>
+        </div>
+    </div>
+
+    <noscript>
+        <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>This site requires Javascript to be enabled!</strong>
+        </div>
+    </noscript>
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <footer>
+        </footer>
+    @Scripts.Render("~/Scripts/basic")
+    @RenderSection("scripts", false)
+</body>
+</html>

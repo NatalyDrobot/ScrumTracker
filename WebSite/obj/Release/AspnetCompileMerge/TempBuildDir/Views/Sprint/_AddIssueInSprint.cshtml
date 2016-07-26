@@ -1,0 +1,75 @@
+﻿@model WebSite.Models.Issue.AddIssueModel
+@{
+    ViewBag.Title = "_AddIssueInSprint";
+}
+
+@using (Html.BeginForm("AddIssueInSprint", "Sprint", null, FormMethod.Post, new {id = "AddIssueToSprintForm", @class = "form-horizontal", role = "form"}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.SprintId)
+    @Html.HiddenFor(model => model.ProjectId)
+    @Html.HiddenFor(model => model.ParentIssueId)
+
+    if (ViewBag.TypeName == "Task")
+    {
+        @Html.HiddenFor(model => model.IssueTypeId)
+    }
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@Resources.Resource.CreateNewIssueInSprint</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Type, new {@class = "control-label col-md-2"})
+                            <div class="col-md-10">
+                                @{ var attributes = ViewBag.propertydisable
+                                       ? (object) new {@class = "form-control", disabled = "disabled"}
+                                       : (object) new {@class = "form-control"}; }
+                                @Html.DropDownList("IssueTypeId", null, attributes)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Name, new {@class = "control-label col-md-2"})
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new {htmlAttributes = new {@class = "form-control"}})
+                                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.Description, new {@class = "control-label col-md-2"})
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.Description, new {@class = "form-control", rows = 3, id = "textArea", style = "-moz-resize:none;-ms-resize:none;-o-resize:none;resize:none;"})
+                                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value=@Resources.Resource.Create class="btn btn-primary" id="createIssuesInSprint" 
+                           data-id="@Model.SprintId" data-parent="@Model.ParentIssueId" data-projectId="@Model.ProjectId"/>
+                    <button type="reset" class="btn btn-primary" data-dismiss="modal">@Resources.Resource.Close</button>
+                </div>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+}
+ @Html.Hidden("show-agile-board-id", Url.Action("ShowAgileBoard","Sprint"))                                
+
+<script type="text/javascript">
+    $.validator.unobtrusive.parse($("form"));
+    
+</script>

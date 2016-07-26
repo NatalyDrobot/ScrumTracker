@@ -1,0 +1,49 @@
+﻿@model WebSite.Models.ConfirmInviteViewModel
+
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+
+}
+
+
+<div class="col-md-6 col-md-offset-3 auth-layout">
+
+    <fieldset class="form-horizontal">
+        <legend class="">Continue registration</legend>
+
+        <div class="col-md-12">
+            @using (Html.BeginForm("ConfirmInvite", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @PlaceHolder = "FirstName" })
+                    @Html.ValidationMessageFor(m => m.FirstName, null)
+                </div>
+                <div class="form-group">
+
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @PlaceHolder = "LastName" })
+                    @Html.ValidationMessageFor(m => m.LastName, null)
+                </div>
+                @Html.HiddenFor(m => m.Email)
+
+                <div class="form-group">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", @PlaceHolder = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password, null)
+                </div>
+                <div class="form-group">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @PlaceHolder = "Confirm Password" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, null)
+                </div>
+                <div class="form-group">
+                    <div class="col-md-8 col-md-offset-4">
+                        <input type="submit" value="Send" class="btn btn-default" />
+                    </div>
+                </div>
+            }
+        </div>
+
+    </fieldset>
+</div>
+
+

@@ -1,0 +1,45 @@
+﻿@model WebSite.Models.Issue.IssueInfoModel
+    @using Resources
+@{
+    ViewBag.Title = "_IssueCommentsPartial";
+}
+
+<div class="panel-heading">
+    <h3 class="panel-title">@Resource.CommentsTitle</h3>
+    <div class="input-group">
+        <input type="text" id="userComment" class="form-control input-sm chat-input" placeholder="@Resource.TextComments" />
+        <span class="input-group-btn" onclick="PostComment()">
+            <a href="#" class="btn btn-success btn-sm" onclick="event.preventDefault()">@Resource.AddComment</a>
+        </span>
+
+    </div>
+    <div class="comments-area" style="height: 620px; overflow: auto;">
+        <ul class="comments-list" style="list-style: none;">
+            @if (Model.CommentsList == null || Model.CommentsList.Count() == 0)
+            {
+            <div class="no-comments" align="center">
+                <h3 style="color: gray;">@Resource.CommentsNot </h3>
+            </div>
+            }
+            else
+            {
+                foreach (var comment in Model.CommentsList)
+                {
+                <li>
+                    <div class="commenter-avatar">
+                        <img src=@Url.Content($"/Content/images/avatars/{comment.Author.Avatar}") alt="avatar" />
+                    </div>
+                    <div class="commenter-name">@comment.Author.FirstName @comment.Author.LastName </div>
+                    <div class="comment-date">@comment.DateCreate</div>
+                    <div class="clearfix"></div>
+                    <div class="comment-text">@comment.Text</div>
+                </li>
+                }
+
+            }
+        </ul>
+    </div>
+</div>
+
+
+

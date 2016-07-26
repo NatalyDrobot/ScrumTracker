@@ -1,0 +1,8 @@
+﻿@model WebSite.Models.Issue.CommentViewModel
+<li>
+    <div class="commenter-avatar"><img src=@Url.Content($"/Content/images/avatars/{Model.Avatar}") alt="avatar" /></div>
+    <div class="commenter-name">@Model.FirstName @Model.LastName</div>
+    <div class="comment-date">@Model.Date</div>
+    <div class="clearfix"></div>
+    <div class="comment-text">@Model.Comment</div>
+</li>

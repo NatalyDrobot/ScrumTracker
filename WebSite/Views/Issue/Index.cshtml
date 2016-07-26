@@ -1,0 +1,107 @@
+﻿@using WebSite.Models.Issue
+@model WebSite.Models.Issue.IssueModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row issue-top-menu">
+    <div class="col-md-1">
+        <i id="show-issue-menu" class="fa fa-align-justify"></i>
+    </div>
+    @if (ViewBag.Projects != null)
+    {
+        <div class="col-md-1">
+            <span>@Resources.Resource.IssueProject:</span>
+        </div>
+        <div class="col-md-8">
+            @Html.DropDownListFor(m => m.SelectedProjectId, ViewBag.Projects as SelectList, null, new {@class = "selected-issue-project"})
+
+        </div>
+    }
+    else
+    {
+        <div class="col-md-9">@Resources.Resource.NoProjects</div>
+    }
+    <div class="col-md-2">
+        @Html.Hidden("AddIssueInfo", Url.Action("AddIssueInfo"))
+        <div class="pull-right">
+            @if (ViewBag.Projects != null && ViewBag.Permission)
+            {
+                <button class="btn issueBtn issue-add">@Resources.Resource.CreateIssueBtn</button>
+            }
+        </div>
+    </div>
+</div>
+<div class="issue-slide-menu">
+    <h4>@Resources.Resource.Filters:</h4>
+    <ul class="issue-sort-filters">
+        <li data-sort="my">@Resources.Resource.IssueFilterMy</li>
+        <li data-sort="all">@Resources.Resource.IssueFilterAll</li>
+        <li data-sort="open">@Resources.Resource.IssueFilterOpen</li>
+        <li data-sort="in-progress">@Resources.Resource.IssueFilterInProgress</li>
+        <li data-sort="fixed">@Resources.Resource.IssueFilterFixed</li>
+        <li data-sort="verified">@Resources.Resource.IssueFilterVerified</li>
+    </ul>
+</div>
+<div class="issue-content">
+    <div class="issues">
+        <div class="text-center"> <input type="text" id="search-issue-input" placeholder="Enter search issue request" data-autocomplete-source='@Url.Action("AutocompleteIssueSearch", "Issue")' /></div>
+        @Html.Hidden("GetIssuesByTerm", Url.Action("SearchIssues"))
+        <div id="issues">  @Html.Partial("~/Views/Issue/_ListIssuesPartial.cshtml")</div>
+    </div>
+    <div class="issue-info">
+        @Html.Hidden("GetIssueInfo", Url.Action("IssueInfo"))
+        <div id="issue-info">
+        </div>
+    </div>
+</div>
+
+
+<div id="modAddIssueDialog" class="modal fade">
+    <div id="dialogAddIssueContent" class="modal-dialog">
+    </div>
+</div>
+
+<div id="modDeleteIssueDialog" class="modal fade">
+    <div id="dialogDeleteIssueContent" class="modal-dialog"></div>
+</div>
+<div id="modAddRelativeIssueDialog" class="modal fade">
+    <div id="dialogRelativeIssueContent" class="modal-dialog"></div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        function PostComment(element) {
+
+            var commentValue = $("#userComment").val();
+
+            if (commentValue != "") {
+
+                var url = '@Url.Action("CreateComment","Issue")';
+                var isueid = $("#Id").val();
+
+                $.post(url,
+                {
+                    text: commentValue,
+                    issueId: isueid
+                }).success(function (data) {
+                    $("#userComment").val('');
+                    $(".no-comments").remove();
+                    $(".comments-list").append(data);
+                }).fail(function (data) {
+                    console.log(data);
+                    alert("Error while addig comment");
+                });
+            } else {
+               
+            }
+        }
+
+
+    </script>
+    
+}
+
+
+

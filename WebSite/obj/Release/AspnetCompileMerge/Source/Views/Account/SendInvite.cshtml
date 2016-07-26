@@ -1,0 +1,32 @@
+﻿@model WebSite.Models.InviteViewModel
+@using Resources
+@{
+    ViewBag.Title = "SendInvite";
+
+}
+<h2>@Resource.SendInviteTitle</h2>
+@using (Html.BeginForm("SendInvite", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            @Resource.SendInviteInfo
+            <p class="text-success">@ViewBag.Message</p>
+            <div class="input-group">
+                @Html.TextBox("Email", "", new {@class = "form-control", @placeholder = "Email"})
+                <span class="input-group-btn">
+                    <input type="submit" value="@Resource.SendInvite" class="btn btn-default" />
+                </span>
+            </div>
+            <br/>
+            <br/>
+            <a href="@Url.Action("ManageUsers", "Manage")" class="btn btn-success">@Resource.Cancel </a>
+
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+        </div>
+    </div>
+}
+
+
+

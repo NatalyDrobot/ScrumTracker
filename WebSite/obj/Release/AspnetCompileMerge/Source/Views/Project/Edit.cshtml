@@ -1,0 +1,95 @@
+﻿@model WebSite.Models.Project.ProjectModel
+
+@*@{
+    Layout = null;
+}*@
+
+@using (Html.BeginForm("Edit", "Project", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@Resources.Resource.EditProject</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <fieldset>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, @Resources.Resource.Name, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Code, @Resources.Resource.Key, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, @Resources.Resource.Description, new { @class = "col-md-2 control-label" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3, id = "textArea", style = "resize:none;" })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DateCreate, @Resources.Resource.Created, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <input type="text" readonly="readonly" class="form-control" id="inputEmail" placeholder="Email" value="@Model.DateCreate.ToShortDateString()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label(@Resources.Resource.State, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("StateProjectsId", null, new { @class = "form-control" })
+                                @*@Html.DropDownListFor(model => model.StateProjectsId, ViewBag.StateProjectsId as SelectList, null, new {@class = "form-control"})*@
+                                @Html.ValidationMessageFor(model => model.StateProjectsId, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TeamId, @Resources.Resource.Team, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @if (Model.TeamId != null)
+                                {
+                                    @Html.DropDownList("TeamId", null, new {@class = "form-control"})
+                                    @*@Html.DropDownListFor(model => model.TeamId, ViewBag.TeamId as SelectList, new {@class = "form-control"})*@
+                                    @Html.ValidationMessageFor(model => model.TeamId, "", new { @class = "text-danger" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(model => model.TeamId, ViewBag.TeamId as SelectList, "...", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.TeamId, "", new { @class = "text-danger" })
+                                }
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">@Resources.Resource.Save</button>
+                <button type="reset" class="btn btn-primary" data-dismiss="modal">@Resources.Resource.Close</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+}
+<script type="text/javascript">
+    $.validator.unobtrusive.parse($("form"));
+</script>
+

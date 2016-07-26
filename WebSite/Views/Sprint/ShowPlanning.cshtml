@@ -1,0 +1,133 @@
+﻿@model WebSite.Models.Sprint.SprintBacklogModel
+@{
+    Layout = null;
+}
+
+<div class="clearfix"></div>
+
+@if (Model.Sprint.Count() + Model.Backlog.Count() != 0)
+{
+    <div class="clearfix"></div>
+    <div class="sprint-container row">
+        <div class="sprint-backlog panel panel-default" id="sprint-backlog" style="margin-top: -3px; overflow: hidden;">
+            <input type="hidden" class="sprint-id" value="@Model.SprintId" />
+            <div class="panel-heading">
+                <span class="panel-title text-center " style="font-size: 17px; margin-left: 38%;">@Resources.Resource.Sprint</span>
+                <span class="glyphicon glyphicon-transfer pull-right" aria-hidden="true" style="top: 5px;"></span>
+            </div>
+            <div class="issues-for-sprint panel-body ">
+                @foreach (var issue in Model.Sprint)
+                {
+                    <div class="sprint-issue-item" data-id="@issue.Id" style="font-weight: bold;">
+                        <p class="issue-name-in-planning col-md-11">
+                            @issue.Key-@issue.Number <strong><a href="@Url.Action("Index", "Issue", new {id = issue.Project.Id, issueId = issue.Id})">@issue.Name</a></strong>
+                            <div class="col-md-1" style="width: 35px; left: 20px;">
+                                @if (issue.Assignee != null)
+                                {
+                                    <img src="@Url.Content("~/Content")/images/avatars/@issue.Assignee.Avatar" alt="avatar" class="issue-avarat" title="@issue.Assignee.Email" />
+                                }
+                            </div>
+                        </p>
+
+                        <div class="row issue-list-item-info" style="margin: 0px -5px;">
+                            <div class="col-md-2" style="background: rgba(138, 195, 184, 0.55);"> @Html.DisplayFor(model => issue.Priority.Name) </div>
+                            <div class="col-md-3" style="background: rgba(218, 165, 32, 0.55);"> @Html.DisplayFor(model => issue.State.Name) </div>
+                            <div class="col-md-2" style="background: rgba(124, 238, 116, 0.58);"> @Html.DisplayFor(model => issue.IssueType.Name) </div>
+                            <div class="board-task-estimate col-md-2" data-issue-estimate="@issue.Estimate"
+                                 style="background: rgba(248, 248, 80, 0.64);"></div>
+
+                            @if (@issue.ParentIssue != null)
+                            {
+                                <div class="col-md-3" style="background: #FFC4D4">
+                                    Parent: @issue.Key-@issue.ParentIssue.Number
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="sprint-main-backlog panel panel-default" id="sprint-main-backlog" style="margin-top: -3px; overflow: hidden;">
+            <div class="panel-heading">
+                <span class="panel-title text-center" style="font-size: 17px; margin-left: 38%;">@Resources.Resource.Backlog</span>
+                <span class="glyphicon glyphicon-transfer pull-right" aria-hidden="true" style="top: 5px;"></span>
+            </div>
+            <div class="issues-for-sprint panel-body">
+                @foreach (var issue in Model.Backlog)
+                {
+                    <div class="sprint-issue-item" data-id="@issue.Id" style="font-weight: bold;">
+                        <p class="issue-name-in-planning col-md-11">
+                            @issue.Key-@issue.Number <strong><a href="@Url.Action("Index", "Issue", new {id = issue.Project.Id, issueId = issue.Id})">@issue.Name</a></strong>
+                            <div class="col-md-1" style="width: 35px;left:20px;">
+                                @if (issue.Assignee != null)
+                                {
+                                    <img src="@Url.Content("~/Content")/images/avatars/@issue.Assignee.Avatar" alt="avatar" class="issue-avarat" title="@issue.Assignee.Email" />
+                                }
+                            </div>
+                        </p>
+                        <div class="row issue-list-item-info" style="margin: 0px -5px;">
+                            <div class="col-md-2" style="background: rgba(138, 195, 184, 0.55);"> @Html.DisplayFor(model => issue.Priority.Name) </div>
+                            <div class="col-md-3" style="background: rgba(218, 165, 32, 0.55);"> @Html.DisplayFor(model => issue.State.Name) </div>
+                            <div class="col-md-2" style="background: rgba(124, 238, 116, 0.58);"> @Html.DisplayFor(model => issue.IssueType.Name) </div>
+                            <div class="board-task-estimate col-md-2" data-issue-estimate="@issue.Estimate"
+                                 style="background: rgba(248, 248, 80, 0.64);"></div>
+
+                            @if (@issue.ParentIssue != null)
+                            {
+                                <div class="col-md-3" style="background: #FFC4D4">
+                                    Parent: @issue.Key-@issue.ParentIssue.Number
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                @*<div class="issue-place hidden">  </div>*@
+            </div>
+        </div>
+        @Html.Hidden("MoveIssue", Url.Action("MoveIssueInSprint"))
+        @Html.Hidden("CountIssues", Url.Action("CountIssues"))
+    </div>
+}
+else
+{
+    <div class="show-messege" align="center" style="top: 40px !important;">
+        <h3 style="color: gray;">
+            No available issues in this sprint and project
+        </h3>
+    </div>
+}
+
+<script type="text/javascript">
+    setTimeout(function () { $('.show-messege').fadeOut('slow') }, 3000);
+
+    $(document).ready(function () {
+        $(".board-task-estimate").each(function () {
+            showEstimate($(this));
+        });
+        var url = $("#DoStartSprint").val();
+        var sprintId = "@Model.SprintId";
+        $.get(url + "/" + sprintId).success(function (data) {
+            if (data[0] !== 2) {   // if sprint not closed - allow moving
+                planningDragAndDrop("#sprint-backlog", "#sprint-main-backlog", ".sprint-issue-item");
+            }
+        });
+    });
+
+    function showEstimate(className) {
+        var count = className.attr("data-issue-estimate");
+        var hours = Math.floor(count / 60);
+        var minutes = count % 60;
+        var res;
+        if ((hours === 0 && minutes === 0) || count === undefined) { res = '0h'; }
+        else if (hours === 0) { res = minutes + 'm'; }
+        else if (minutes === 0) { res = hours + 'h'; }
+        else { res = hours + 'h' + minutes + 'm'; }
+        className.text(res);
+    }
+</script>
+
+
+
+
+

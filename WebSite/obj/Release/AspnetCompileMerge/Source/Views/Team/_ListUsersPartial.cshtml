@@ -1,0 +1,51 @@
+﻿@using PagedList
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "_ListUsersPartial";
+}
+
+<ul id="usersList">
+    @foreach (var user in Model.Users)
+    {
+    <li class="userItem">
+        <div class="meta">
+            <div class="row ">
+                <div class="col-md-4 p0">
+                    <img src="@Url.Content("~/Content")/images/avatars/@user.Avatar" class="userAvatar" alt="" />
+                </div>
+                <div class="col-md-5 text-left userInfo">
+                    <p>@user.FirstName</p>
+                    <p>@user.LastName</p>
+                    <p class="userEmail">@user.Email</p>
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+        <input type="hidden" class="userId" value="@user.Id" />
+    </li>
+    }
+</ul>
+<input type="hidden" value="@ViewBag.UserFilter" id="viewbagUserFilter" />
+<input type="hidden" value="@ViewBag.UserPage" id="viewbagUserPage"/>
+<input type="hidden" value="@ViewBag.TeamIdFilter" id="viewbagTeamIdFilter" />
+
+@if (Model.Users.PageCount > 1)
+{
+    @Html.PagedListPager((IPagedList)Model.Users,
+        page => Url.Action("SearchUsers", new
+        {
+            page,
+            term = ViewBag.UserFilter,
+            teamId = ViewBag.TeamIdFilter
+        }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(PagedListRenderOptions.PageNumbersOnly,
+            new AjaxOptions
+            {
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "Get",
+                UpdateTargetId = "users"
+            }))
+
+}
+

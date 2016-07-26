@@ -1,0 +1,46 @@
+﻿html { 
+  background: url("/Content/images/header_bg.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+    background:none;
+}
+
+
+.auth-layout{
+    padding-top: 150px;
+}
+
+.auth-layout .btn-default{
+    min-width:150px;
+}
+
+.hidden_custom{
+    display:none;
+}
+
+.input-validation-error{
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+}
+
+#LoginError,#RemindError{
+    height: 30px;
+    color: #e16e6e;
+}
+
+.content{
+   background-color: rgba(255, 255, 255,0.4);
+   margin: 150px auto;
+   min-height:300px;
+   padding:30px;
+   border-radius:5px;
+}
+
+p.content {
+    margin: 0;
+}

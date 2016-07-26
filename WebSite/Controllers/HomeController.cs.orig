@@ -1,0 +1,88 @@
+﻿using System.Web.Mvc;
+using BusinessLayer.Contracts.Interfaces;
+using WebSite.Models;
+using System;
+using System.Collections.Generic;
+<<<<<<< HEAD
+using WebSite.Util.Filters;
+=======
+using System.Runtime.InteropServices;
+>>>>>>> 03a9617ce12ef68478a53a4ce0b9c8ed36b60ea4
+
+namespace WebSite.Controllers
+{
+    [RequireHttps]
+    [Authorize]
+    [Culture]
+    public class HomeController : BaseController
+    {
+        private readonly IManagerProject mngrProject;
+        private readonly IManagerTeam mngrTeam;
+        private readonly IManagerSprint mngrSprint;
+        private readonly IManagerIssue mngrIssue;
+
+        public HomeController(IManagerProject projectManager, IManagerTeam teamManager, IManagerSprint sprintManager, IManagerIssue issueManager)
+        {
+            mngrProject = projectManager;
+            mngrTeam = teamManager;
+            mngrSprint = sprintManager;
+            mngrIssue = issueManager;
+        }
+
+        public ActionResult Index()
+        {
+
+            List<DashBoardView> vm = new List<DashBoardView>();
+
+            var teamsList = mngrTeam.GetUsersTeams(CurrentUserId);
+
+            //var IssueInProgress = mngrIssue.GetTypeByName() GetAllIssueStates();
+            //var TypeStory = mngrIssue.GetAllIssues();
+             
+            var projectList = mngrProject.GetUsersProject(Guid.Parse(CurrentUserId));
+
+            if (projectList != null)
+            {
+                foreach (var project in projectList)
+                {                   
+
+                    var sprints = mngrSprint.GetSprintsByProjectId(project.Id);
+
+                    if (sprints != null)
+                    {
+                        foreach (var sprint in sprints)
+                        {
+                            DashBoardView item = new DashBoardView();
+                            item.ProjectName = project.Name;
+                            item.ProjectId = project.Id;
+                            item.SprintId = sprint.Id;
+                            item.SprintName = sprint.Name;
+                            item.EndDate = sprint.DateEnd;
+                            item.StoryOpen = mngrIssue.CountSprintIssuesByStateAndType("Story","Open",sprint.Id);
+                            item.StoryDone = mngrIssue.CountSprintIssuesByStateAndType("Story", "Fixed", sprint.Id);
+                            item.TaskInProgress = mngrIssue.CountSprintIssuesByStateAndType("Task", "In Progress", sprint.Id);
+
+                            vm.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return View(vm);
+        }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+    }
+}

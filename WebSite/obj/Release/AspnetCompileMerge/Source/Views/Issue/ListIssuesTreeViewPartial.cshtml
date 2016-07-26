@@ -1,0 +1,80 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@model WebSite.Models.Issue.IssueModel
+@{
+    ViewBag.Title = "_ListIssuesPartial";
+}
+
+<ul id="issue-list">
+    <div class="row headings-for-issues">
+        <h5 class="col-md-3">Priority</h5>
+        <h5 class="col-md-3">State</h5>
+        <h5 class="col-md-2">Type</h5>
+        <h5 class="col-md-2">Sprint</h5>
+    </div>
+    @foreach (var issue in Model.Issues)
+    {
+    <li class="issue-item">
+        <p class="issue-list-item-name">
+            <a href="#" data-id="@issue.Id" type="button">@issue.Name</a>
+        </p>
+        <div class="row issue-list-item-info">
+            <div class="col-md-3"> @Html.DisplayFor(model => issue.Priority.Name) </div>
+            <div class="col-md-3"> @Html.DisplayFor(model => issue.State.Name) </div>
+            <div class="col-md-2"> @Html.DisplayFor(model => issue.IssueType.Name) </div>
+            <div class="col-md-2">
+                @if (issue.Sprint != null)
+                {
+                @Html.DisplayFor(model => issue.Sprint.Name)
+                }
+                else
+                {
+                <p>Unkown</p>
+                }
+            </div>
+            <div class="col-md-1">
+                <div class="delete-issue">
+                    <a href="@Url.Action("DeleteIssueInfo", "Issue", new {id = issue.Id})" class="issue-delete"><i class="fa  fa-times"></i></a>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" class="issue-id" value="@issue.Id" />
+        @if (issue.Children != null)
+        {
+        <ul>
+            @foreach (var child in issue.Children)
+            {
+                <li>@child.Name</li>
+            }
+        </ul>
+        }
+    </li>
+    }
+</ul>
+
+
+
+<input type="hidden" value="@ViewBag.IssueFilter" id="viewbagIssueFilter" />
+<input type="hidden" value="@ViewBag.IssuePage" id="viewbagIssuePage" />
+<input type="hidden" value="@ViewBag.ProjectId" id="viewbagIssueProject" />
+
+
+<div class="text-center">
+    @if (Model.Issues.PageCount > 1)
+    {
+    @Html.PagedListPager((IPagedList)Model.Issues,
+        page => Url.Action("SearchIssues", new
+        {
+            page,
+            term = ViewBag.IssueFilter,
+            projectId = ViewBag.ProjectId
+        }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(PagedListRenderOptions.PageNumbersOnly,
+            new AjaxOptions
+            {
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "Get",
+                UpdateTargetId = "issues"
+            }))
+
+    }
+</div>

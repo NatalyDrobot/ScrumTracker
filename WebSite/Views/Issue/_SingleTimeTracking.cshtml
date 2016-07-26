@@ -1,0 +1,38 @@
+﻿@model DTO.Entities.TimeTrackingDto
+@{
+    ViewBag.Title = "_SingleTimeTracking";
+}
+
+<li>
+    <div class="row time-tracking-item">
+        <div class="col-md-1 time-tracking-avatar p0">
+            <img src=@Url.Content($"/Content/images/avatars/{Model.User.Avatar}") alt="avatar" />
+
+        </div>
+        <div class="col-md-2 time-tracking-fio p0">
+            <p> @Model.User.FirstName @Model.User.LastName </p>
+        </div>
+        <div class="col-md-1 time-tracking-types p0">
+            @Model.DateCreate.ToShortDateString()
+        </div>
+        <div class="col-md-4 time-tracking-comment">
+            <p>@Model.Description</p>
+        </div>
+        <div class="col-md-1 time-tracking-estimate p0">
+            <p class="time-tracking-spent-time" data-issue-estimate="@Model.SpentTime"></p>
+        </div>
+        <div class="col-md-2 time-tracking-types p0">
+            @Html.DropDownListFor(m => m.TimeTrackingTypeId, ViewBag.TimeTrackingTypes as SelectList, "", new {@class = "selected-time-tracking-type", @disabled = "disabled"})
+        </div>
+
+        <div class="col-md-1 time-tracking-add-time-tracking ">
+            @if (ViewBag.Permission)
+            {
+                <a data-id="@Model.Id" class="delete-time-tracking-item"><i class="fa  fa-times"></i></a>
+            }
+        </div>
+    </div>
+</li>
+@Html.Hidden("delete-time-tracking", Url.Action("DeleteTimeTracking"))
+
+

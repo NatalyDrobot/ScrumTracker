@@ -1,0 +1,197 @@
+﻿@using System.ComponentModel.DataAnnotations
+@model WebSite.Models.Issue.IssueInfoModel
+@{
+    ViewBag.Title = "_IssueDataPartial";
+}
+
+@*<div class="panel-heading">
+
+    </div>*@
+@using (Html.BeginForm("EditIssue", "Issue", FormMethod.Post, new { Id = "EditIssueForm" }))
+{
+    <div>
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Name)
+        @Html.HiddenFor(m => m.Description)
+        @Html.HiddenFor(m => m.CreatorId)
+        @Html.HiddenFor(m => m.Estimate)
+        @Html.EditorFor(model => model.DateCreate, new { htmlAttributes = new { @class = "form-control hidden", @type = "date", @Value = @Model.DateCreate.ToString("yyyy-MM-dd") } })
+        @Html.HiddenFor(m => m.ProjectId)
+        @Html.HiddenFor(m => m.SprintId)
+        @Html.HiddenFor(m => m.SpentTime)
+        @Html.HiddenFor(m => m.ParentIssueId)
+        @Html.HiddenFor(m => m.Number)
+
+    </div>
+    <div class="row issue-row">
+        <div class="col-md-7 issue-info-description" data-id="@Model.Id">
+            <p class="issue-name">@Html.DisplayTextFor(m => m.Name)</p>
+            @if (Model.Children.Count > 0)
+            {
+
+            <ul class="list-issue-child">
+                <li><span class="issue-children-header">@Resources.Resource.IssueChildren:</span></li>
+                @foreach (var child in Model.Children)
+                {
+                    <li data-id="@child.Id" class="issue-children-item">
+                        @if (ViewBag.Permission)
+                        {
+                        <a data-id="@child.Id" class="delete-issue-child"><i class="fa  fa-times"></i></a>
+                        }
+                        <span>@child.Project.Code-@child.Number</span>
+
+                    </li>
+                }
+            </ul>
+            }
+            @if (Model.ParentIssue != null)
+            {
+            <div class="parent-issue">
+                <span class="issue-parent-header">@Resources.Resource.IssueParent:</span>
+                @if (ViewBag.Permission)
+                {
+                    <a data-id="@Model.Id" class="delete-issue-parent"><i class="fa  fa-times"></i></a>
+                }
+                <span>@Model.ParentIssue.Project.Code-@Model.ParentIssue.Number</span>
+            </div>
+            }
+            @if (Model.Description == null)
+            {
+            <pre class="issue-description"><span>Description</span></pre>
+            }
+            else
+            {
+                <pre class="issue-description"><span>@Html.DisplayTextFor(m => m.Description)</span></pre>
+            }
+            @Html.Hidden("add-child-issue-info", Url.Action("AddChildIssueInfo"))
+            @Html.Hidden("add-parent-issue-info", Url.Action("AddParentIssueInfo"))
+            @Html.Hidden("add-parent-issue", Url.Action("AddParentIssue"))
+            @Html.Hidden("delete-parent-issue", Url.Action("DeleteParentIssue"))
+
+        </div>
+        <div class="col-md-5 issue-info-menu">
+            <div class="row issue-row">
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueProject</span>
+                    <span class="col-md-9 issue-info-menu-item-heading"><a href="@Url.Action("FilterProjectsByName","Project",new {id = Model.Project.Name})">@Model.Project.Name</a></span>
+                </div>
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueSprint</span>
+                    <span class="col-md-9 issue-info-menu-item-heading">
+                        @if (Model.Sprint != null)
+                        {
+                           <a href="@Url.Action("Index","Sprint",new {id = Model.Sprint.Id})"> @Model.Sprint.Name</a>
+                        }
+                        else
+                        {
+                            @Resources.Resource.Unknown
+                        }
+                    </span>
+                </div>
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.Created</span>
+                    <span class="col-md-9 issue-info-menu-item-heading">@Model.DateCreate.ToShortDateString()</span>
+                </div>
+                @{ var attributes = ViewBag.Permission
+                       ? (object) new {}
+                       : (object) new {disabled = "disabled"}; }
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssuePriority</span>
+                    <div class="col-md-9">
+                        @if (Model.Priority != null)
+                        {
+                            @Html.DropDownListFor(m => m.PriorityId, ViewBag.IssuePriorities as SelectList, null, attributes)
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.PriorityId, ViewBag.IssuePriorities as SelectList, "", attributes)
+                        }
+                    </div>
+                </div>
+
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueType</span>
+                    <div class="col-md-9">
+                        @if (Model.IssueType != null)
+                        {
+                            @Html.DropDownListFor(m => m.IssueTypeId, ViewBag.IssueTypes as SelectList, attributes)
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.IssueTypeId, ViewBag.IssueTypes as SelectList, "", attributes)
+                        }
+                    </div>
+                </div>
+
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueState</span>
+                    <div class="col-md-9">
+                        @if (Model.State != null)
+                        {
+                            @Html.DropDownListFor(m => m.StateId, ViewBag.IssueStates as SelectList, null, attributes)
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.StateId, ViewBag.IssueStates as SelectList, "", attributes)
+                        }
+                    </div>
+                </div>
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueAsignee</span>
+                    <div class="col-md-9">
+                        @if (Model.Assignee != null)
+                        {
+                            @Html.DropDownListFor(m => m.AssigneeId, ViewBag.IssueAsignee as SelectList, null, attributes)
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.AssigneeId, ViewBag.IssueAsignee as SelectList, "", attributes)
+                        }
+                    </div>
+                </div>
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueEstimate</span>
+
+                    <div class="col-md-9">
+                        <span class="issue-info-menu-item-estimate" data-issue-estimate="@Model.Estimate"></span>
+                        <p class="issue-info-menu-item-estimate-error">Wrong format: 1h20m</p>
+                    </div>
+                </div>
+                <div class="issue-info-menu-item row">
+                    <span class="col-md-3">@Resources.Resource.IssueSpentTime</span>
+
+                    <div class="col-md-9">
+                        <span class="issue-info-menu-item-spent-time" data-issue-estimate="@Model.SpentTime"></span>
+                        <p class="issue-info-menu-item-spent-time-error">Wrong format: 1h20m</p>
+                    </div>
+                </div>
+                @if (ViewBag.Permission)
+                {
+                    <div class="issue-info-menu-item row">
+                        <div class="col-md-6 parent-set">
+                            <button class="text-center btn btn-primary btn-relative-issue-test set-parent-issue-btn"><i class="glyphicon glyphicon-link icon-relative" aria-hidden="true"></i> Parent</button>
+                        </div>
+                        <div class="col-md-6 children-set">
+                            <button class="text-center btn btn-primary btn-relative-issue-test set-child-issue-btn"><i class="glyphicon glyphicon-link icon-relative" aria-hidden="true"></i> Children</button>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+                    }
+
+<script type="text/javascript">
+    $(function () {
+        if (!Modernizr.inputtypes.date) {
+            $(function () {
+                $("input[type='date']")
+                    .datepicker({ dateFormat: 'dd/mm/yy' })
+                    .get(0).setAttribute("type", "text");
+            });
+        }
+    });
+    $.validator.unobtrusive.parse($("form"));
+</script>

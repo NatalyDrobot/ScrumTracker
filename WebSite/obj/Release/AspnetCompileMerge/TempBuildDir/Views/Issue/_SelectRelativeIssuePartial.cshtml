@@ -1,0 +1,28 @@
+﻿@model IEnumerable<DTO.Entities.IssueDto>
+@{
+    ViewBag.Title = "_SelectRelativeIssuePartial";
+}
+
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal" area-hidden="true">&times;</button>
+        <h4>Select issue</h4>
+    </div>
+    <div class="modal-body">
+        <ul class="issue-relative-list">
+        @foreach (var issue in Model)
+        {
+        <li class="issue-relative-item" data-id="@issue.Id">@issue.Project.Code-@issue.Number @issue.Name</li>
+        }
+        </ul>
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <button class="btn btn-primary relative-issue-btn">Save</button>
+            </div>
+            <div class="col-md-6 text-center">
+                <button class="btn btn-primary" data-dismiss="modal" area-hidden="true">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
